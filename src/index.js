@@ -1,8 +1,8 @@
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
-const flash = require('connect-flash');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 require('dotenv').config();
 const db = require('./configs/db');
 const signup = require('./routes/auth');
@@ -16,105 +16,70 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use('/auth', signup);
 
 // add a basic route
-
 app.get('/', function (req, res) {
     res.json({ message: 'Express is up!' });
 });
 
-const passport = require('passport');
-const LocalStrategy = require('passport-local').Strategy;
-const session = require('express-session');
-// Use session middleware
-app.use(
-    session({
-        secret: 'your-secret-key',
-        resave: false,
-        saveUninitialized: false,
-    })
-);
-app.use(flash());
-// Initialize Passport
-app.use(passport.initialize());
-app.use(passport.session());
+const jwtsecretkey = process.env.JWT_SECRET_KEY;
+const jwtexpiration = process.env.JWT_EXPIRATION;
 
-passport.use(
-    new LocalStrategy(function verify(username, password, cb) {
-        db.query(
-            'SELECT * FROM users WHERE username = ?',
-            [username],
-            function (err, user) {
-                if (err) {
-                    return cb(err);
-                }
-                if (user.length === 0) {
-                    return cb(null, false, {
-                        message: 'Incorrect username or password.',
-                    });
-                }
-
-                // console.log(user);
-                // console.log(password);
-                // console.log(user[0].password);
-
-                bcrypt.compare(
-                    password,
-                    user[0].password,
-                    function (err, isMatch) {
-                        if (err) {
-                            return cb(err);
-                        }
-                        if (!isMatch) {
-                            return cb(null, false, {
-                                message: 'Incorrect username or password.',
-                            });
-                        }
-                        return cb(null, user[0]);
-                    }
-                );
+app.post('/login', (req, res) => {
+    db.query(
+        'SELECT * FROM users WHERE username = ?',
+        [req.body.username],
+        function (err, user) {
+            if (err) {
+                return res.status(500).json({ error: 'Internal server error' });
             }
-        );
-    })
-);
+            if (user.length === 0) {
+                return res
+                    .status(401)
+                    .json({ error: 'Incorrect username or password.' });
+            }
 
+            bcrypt.compare(
+                req.body.password,
+                user[0].password,
+                function (err, isMatch) {
+                    if (err) {
+                        return res
+                            .status(500)
+                            .json({ error: 'Internal server error' });
+                    }
+                    if (!isMatch) {
+                        return res
+                            .status(401)
+                            .json({ error: 'Incorrect username or password.' });
+                    }
 
-
-passport.serializeUser((user, done) => {
-    done(null, user.id);
+                    const token = jwt.sign({ id: user[0].id }, jwtsecretkey, {
+                        expiresIn: jwtexpiration,
+                    });
+                    return res.json({ token });
+                }
+            );
+        }
+    );
 });
 
-passport.deserializeUser((id, done) => {
-    db.query('SELECT * FROM users WHERE id = ?', [id], function (err, users) {
-        const user = users.find((u) => u.id === id);
-        done(null, user);
+function authenticateToken(req, res, next) {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+
+    if (token == null) return res.sendStatus(401);
+
+    jwt.verify(token, jwtsecretkey, (err, user) => {
+        if (err) return res.sendStatus(403);
+        req.user = user;
+        next();
     });
-});
-
-app.post(
-    '/login',
-    passport.authenticate('local', {
-        successRedirect: '/profile',
-        failureRedirect: '/login',
-        failureFlash: true,
-    })
-);
-app.get('/profile', (req, res) => {
-    if (req.isAuthenticated()) {
-        res.send('Welcome to your profile');
-    } else {
-        res.redirect('/login');
-    }
-});
-app.get('/login', (req, res) => {
-    res.send('Login page');
-});
-
-function ensureAuthenticated(req, res, next) {
-    if (req.isAuthenticated()) {
-        return next();
-    }
-    res.redirect('/login');
 }
-app.get('/protected', ensureAuthenticated, (req, res) => {
+
+app.get('/profile', authenticateToken, (req, res) => {
+    res.send('Welcome to your profile');
+});
+
+app.get('/protected', authenticateToken, (req, res) => {
     res.send('This is a protected route');
 });
 
