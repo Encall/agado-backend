@@ -9,19 +9,19 @@ const jwtsecretkey = process.env.JWT_SECRET_KEY;
 const jwtexpiration = process.env.JWT_EXPIRATION;
 
 router.post('/signup', (req, res) => {
-    const { username, password } = req.body;
+    const { email, password } = req.body;
 
-    // Check if username and password are provided
-    if (!username || !password) {
+    // Check if email and password are provided
+    if (!email || !password) {
         return res
             .status(400)
-            .json({ message: 'Username and password are required.' });
+            .json({ message: 'Email and password are required.' });
     }
 
     // Check if user already exists
     db.query(
-        'SELECT * FROM users WHERE username = ?',
-        [username],
+        'SELECT * FROM userAccount WHERE email = ?',
+        [email],
         function (err, users) {
             if (err) {
                 return res
@@ -32,7 +32,7 @@ router.post('/signup', (req, res) => {
             if (users.length > 0) {
                 return res
                     .status(400)
-                    .json({ message: 'Username already exists.' });
+                    .json({ message: 'Email already exists.' });
             }
 
             // Hash the password
@@ -45,8 +45,8 @@ router.post('/signup', (req, res) => {
 
                 // Insert the new user into the database
                 db.query(
-                    'INSERT INTO users (username, password) VALUES (?, ?)',
-                    [username, hashedPassword],
+                    'INSERT INTO userAccount (email, password) VALUES (?, ?)',
+                    [email, hashedPassword],
                     function (err, result) {
                         if (err) {
                             return res
@@ -58,7 +58,7 @@ router.post('/signup', (req, res) => {
 
                         // Create a JWT
                         const token = jwt.sign(
-                            { username: username },
+                            { email: email },
                             jwtsecretkey,
                             { expiresIn: jwtexpiration }
                         );

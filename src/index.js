@@ -6,6 +6,7 @@ const jwt = require('jsonwebtoken');
 require('dotenv').config();
 const db = require('./configs/db');
 const signup = require('./routes/auth');
+const cors = require('cors');
 
 // parse application/json
 app.use(bodyParser.json());
@@ -13,7 +14,10 @@ app.use(bodyParser.json());
 //parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: true }));
 
+app.use(cors());
+
 app.use('/auth', signup);
+
 
 // add a basic route
 app.get('/', function (req, res) {
@@ -25,8 +29,8 @@ const jwtexpiration = process.env.JWT_EXPIRATION;
 
 app.post('/login', (req, res) => {
     db.query(
-        'SELECT * FROM users WHERE username = ?',
-        [req.body.username],
+        'SELECT * FROM userAccount WHERE email = ?',
+        [req.body.email],
         function (err, user) {
             if (err) {
                 return res.status(500).json({ error: 'Internal server error' });
@@ -34,7 +38,7 @@ app.post('/login', (req, res) => {
             if (user.length === 0) {
                 return res
                     .status(401)
-                    .json({ error: 'Incorrect username or password.' });
+                    .json({ error: 'Incorrect email or password.' });
             }
 
             bcrypt.compare(
@@ -49,7 +53,7 @@ app.post('/login', (req, res) => {
                     if (!isMatch) {
                         return res
                             .status(401)
-                            .json({ error: 'Incorrect username or password.' });
+                            .json({ error: 'Incorrect email or password.' });
                     }
 
                     const token = jwt.sign({ id: user[0].id }, jwtsecretkey, {
