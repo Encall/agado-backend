@@ -5,6 +5,8 @@ const jwt = require('jsonwebtoken');
 require('dotenv').config();
 const routes = require('./routes');
 const cors = require('cors');
+const passport = require('passport');
+require('./configs/passport-config')(passport);
 
 // parse application/json
 app.use(bodyParser.json());
@@ -13,6 +15,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(cors());
+
+app.use(passport.initialize());
 
 app.use('/api', routes);
 

@@ -15,7 +15,4 @@ exports.protected = (req, res) => {
             next();
         });
     }
-
-    
-
 };
