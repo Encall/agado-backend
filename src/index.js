@@ -6,6 +6,7 @@ require('dotenv').config();
 const routes = require('./routes');
 const cors = require('cors');
 const passport = require('passport');
+const cookieParser = require('cookie-parser');
 require('./configs/passport-config')(passport);
 
 // parse application/json
@@ -13,6 +14,8 @@ app.use(bodyParser.json());
 
 //parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: true }));
+
+app.use(cookieParser()); 
 
 app.use(cors());
 

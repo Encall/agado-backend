@@ -9,20 +9,19 @@ const opts = {
 
 module.exports = (passport) => {
     passport.use(
-        new JwtStrategy(opts, (jwt_payload, done) => {
-            db.query(
-                'SELECT * FROM userAccount WHERE email = ?',
-                [jwt_payload.email],
-                function (error, results, fields) {
-                    if (error) throw error;
-
-                    if (results.length > 0) {
-                        return done(null, results[0]);
-                    } else {
-                        return done(null, false);
-                    }
+        new JwtStrategy(
+            {
+                jwtFromRequest: (req) => req.cookies.token,
+                secretOrKey: opts.secretOrKey,
+            },
+            (jwtPayload, done) => {
+                console.log(jwtPayload);
+                if (Date.now() > jwtPayload.expires) {
+                    return done('jwt expired');
                 }
-            );
-        })
+
+                return done(null, jwtPayload);
+            }
+        )
     );
 };

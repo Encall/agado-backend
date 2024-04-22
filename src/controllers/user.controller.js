@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const db = require('../configs/db');
 
+const opts = require('../configs/cookie-config');
 const jwtsecretkey = process.env.JWT_SECRET_KEY;
 const jwtexpiration = process.env.JWT_EXPIRATION;
 
@@ -44,7 +45,8 @@ exports.login = async (req, res) => {
         const token = jwt.sign({ id: user.id }, jwtsecretkey, {
             expiresIn: jwtexpiration,
         });
-        return res.json({ token });
+        res.cookie('token', token, opts.options);
+        return res.status(200).send();
     } catch (error) {
         console.log(error);
         return res.status(500).json({ error: 'Internal server error' });
@@ -72,12 +74,12 @@ exports.signup = async (req, res) => {
                 }
             );
         });
-        
+
         if (user) {
             console.log('Email already exists');
             return res.status(400).json({ message: 'Email already exists.' });
         }
-        
+
         // Hash the password
         const hashedPassword = await new Promise((resolve, reject) => {
             bcrypt.hash(password, 10, function (err, hash) {
@@ -103,10 +105,12 @@ exports.signup = async (req, res) => {
             expiresIn: jwtexpiration,
         });
 
-        res.status(200).json({
-            message: 'Signup successful.',
-            token: token,
-        });
+        res.cookie('token', token, opts.options);
+        res.status(200)
+            .json({
+                message: 'Signup successful.',
+            })
+            .send();
     } catch (error) {
         return res.status(500).json({
             message: 'Error occurred during signup.',
