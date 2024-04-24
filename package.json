@@ -36,6 +36,7 @@
     },
     "devDependencies": {
         "drizzle-kit": "^0.20.17"
+    },
     "engines": {
         "npm": "please-use-pnpm",
         "pnpm": ">= 9.0.0"

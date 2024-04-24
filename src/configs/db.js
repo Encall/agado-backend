@@ -1,13 +1,15 @@
-import { drizzle } from 'drizzle-orm/mysql2';
-import mysql from 'mysql2/promise';
-import * as schema from './schema';
+const {drizzle} = require('drizzle-orm/mysql2');
+const mysql = require('mysql2/promise');
+const schema = require('../drizzle/schema');
 
-export const connection = await mysql.createConnection({
+const connection = mysql.createConnection({
   host: process.env.DB_HOST,
-  user: process.env.DB_USER,
+  user: process.env.DB_USERNAME,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
   multipleStatements: true,
 });
 
-export const db = drizzle(connection, { schema }); 
+const db = drizzle(connection, { schema: {schema}, mode: 'default'});
+
+module.exports = db;

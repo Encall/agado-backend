@@ -9,16 +9,7 @@ const jwtexpiration = process.env.JWT_ACCESS_EXPIRATION;
 
 exports.login = async (req, res) => {
     try {
-        const [user] = await new Promise((resolve, reject) => {
-            db.query(
-                'SELECT * FROM userAccount WHERE email = ?',
-                [req.body.email],
-                function (err, result) {
-                    if (err) reject(err);
-                    resolve(result);
-                }
-            );
-        });
+        const user = await db.select().from('userAccount').where('email', req.body.email);
 
         if (!user || user.length === 0) {
             return res
