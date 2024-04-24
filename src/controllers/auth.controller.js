@@ -4,8 +4,8 @@ const jwt = require('jsonwebtoken');
 const db = require('../configs/db');
 
 const opts = require('../configs/cookie-config');
-const jwtsecretkey = process.env.JWT_SECRET_KEY;
-const jwtexpiration = process.env.JWT_EXPIRATION;
+const jwtsecretkey = process.env.JWT_ACCESS_SECRET_KEY;
+const jwtexpiration = process.env.JWT_ACCESS_EXPIRATION;
 
 exports.login = async (req, res) => {
     try {
@@ -42,10 +42,20 @@ exports.login = async (req, res) => {
             });
         }
 
-        const token = jwt.sign({ id: user.id }, jwtsecretkey, {
+        const accessToken = jwt.sign({ id: user.id }, jwtsecretkey, {
             expiresIn: jwtexpiration,
         });
-        res.cookie('token', token, opts.options).send();
+        const refreshToken = jwt.sign(
+            { id: user.id },
+            process.env.JWT_REFRESH_SECRET_KEY,
+            {
+                expiresIn: process.env.JWT_REFRESH_EXPIRATION,
+            }
+        );
+
+        res.cookie('accessToken', accessToken, opts.options);
+        res.cookie('refreshToken', refreshToken, opts.refreshOptions);
+
         return res.status(200).send();
     } catch (error) {
         console.log(error);
@@ -101,11 +111,20 @@ exports.signup = async (req, res) => {
         });
 
         // Create a JWT
-        const token = jwt.sign({ email: email }, jwtsecretkey, {
+        const accessToken = jwt.sign({ id: user.id }, jwtsecretkey, {
             expiresIn: jwtexpiration,
         });
+        const refreshToken = jwt.sign(
+            { id: user.id },
+            process.env.JWT_REFRESH_SECRET_KEY,
+            {
+                expiresIn: process.env.JWT_REFRESH_EXPIRATION,
+            }
+        );
 
-        res.cookie('token', token, opts.options);
+        res.cookie('accessToken', accessToken, opts.options);
+        res.cookie('refreshToken', refreshToken, opts.refreshOptions);
+
         res.status(200)
             .json({
                 message: 'Signup successful.',
@@ -116,4 +135,57 @@ exports.signup = async (req, res) => {
             message: 'Error occurred during signup.',
         });
     }
+};
+
+exports.jwtRefreshTokenValidate = (req, res, next) => {
+    try {
+        const refreshToken = req.cookies.refreshToken;
+        if (!refreshToken) {
+            console.log('No refresh token provided');
+            return res.sendStatus(403);
+        }
+        const decoded = jwt.verify(
+            refreshToken,
+            process.env.JWT_REFRESH_SECRET_KEY
+        );
+        req.user = decoded;
+        console.log(req.user);
+        next();
+    } catch (error) {
+        console.log('Error verifying refresh token:', error);
+        return res.sendStatus(403);
+    }
+};
+
+exports.refresh = async (req, res) => {
+    db.query(
+        'SELECT * FROM userAccount WHERE id = ?',
+        [req.user.id],
+        function (err, result) {
+            if (err) {
+                console.error(err);
+                return res.status(500).json({ error: 'Internal server error' });
+            }
+
+            if (result.length === 0) {
+                return res.status(404).json({ error: 'User not found' });
+            }
+
+            const user = result[0];
+            const accessToken = jwt.sign(
+                { id: user.id },
+                process.env.JWT_ACCESS_SECRET_KEY,
+                { expiresIn: process.env.JWT_ACCESS_EXPIRATION }
+            );
+            const refreshToken = jwt.sign(
+                { id: user.id },
+                process.env.JWT_REFRESH_SECRET_KEY,
+                { expiresIn: process.env.JWT_REFRESH_EXPIRATION }
+            );
+
+            res.cookie('accessToken', accessToken, opts.options);
+            res.cookie('refreshToken', refreshToken, opts.refreshOptions);
+            return res.status(200).send();
+        }
+    );
 };

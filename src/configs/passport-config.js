@@ -1,18 +1,12 @@
 const JwtStrategy = require('passport-jwt').Strategy;
-const ExtractJwt = require('passport-jwt').ExtractJwt;
-const db = require('../configs/db');
-
-const opts = {
-    jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-    secretOrKey: process.env.JWT_SECRET_KEY,
-};
+require('dotenv').config();
 
 module.exports = (passport) => {
     passport.use(
         new JwtStrategy(
             {
-                jwtFromRequest: (req) => req.cookies.token,
-                secretOrKey: opts.secretOrKey,
+                jwtFromRequest: (req) => req.cookies.accessToken,
+                secretOrKey: process.env.JWT_ACCESS_SECRET_KEY,
             },
             (jwtPayload, done) => {
                 console.log(jwtPayload);

@@ -1,14 +1,10 @@
 const express = require('express');
 const router = express.Router();
-
-const loginRoutes = require('./login.route');
-const signupRoutes = require('./signup.route');
 const passport = require('passport');
-
 const db = require('../configs/db');
+const authRoute = require('./auth.route');
 
-router.use('/login', loginRoutes);
-router.use('/signup', signupRoutes);
+router.use('/', authRoute);
 
 router.get(
     '/protected',
