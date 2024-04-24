@@ -8,18 +8,21 @@
         "test": "echo \"Error: no test specified\" && exit 1",
         "start": "node src/index.js",
         "dev": "nodemon src/index.js",
-        "format": "prettier --write ."
+        "format": "prettier --write .",
+        "db:generate": "drizzle-kit generate:mysql"
     },
     "keywords": [],
     "author": "",
     "license": "ISC",
     "dependencies": {
+        "@planetscale/database": "^1.16.0",
         "bcrypt": "^5.1.1",
         "body-parser": "^1.20.2",
         "connect-flash": "^0.1.1",
         "cookie-parser": "^1.4.6",
         "cors": "^2.8.5",
         "dotenv": "^16.4.5",
+        "drizzle-orm": "^0.30.9",
         "express": "^4.19.2",
         "express-session": "^1.18.0",
         "jsonwebtoken": "^9.0.2",
@@ -31,6 +34,8 @@
         "prettier": "^3.2.5",
         "sequelize": "^6.37.3"
     },
+    "devDependencies": {
+        "drizzle-kit": "^0.20.17"
     "engines": {
         "npm": "please-use-pnpm",
         "pnpm": ">= 9.0.0"
