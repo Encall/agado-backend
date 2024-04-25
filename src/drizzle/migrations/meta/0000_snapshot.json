@@ -1,14 +1,14 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "79afa7ea-137f-464a-b2f0-bb921419e306",
+  "id": "5f52128b-7e02-472f-99aa-955da42731db",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "airport": {
       "name": "airport",
       "columns": {
-        "aiportID": {
-          "name": "aiportID",
+        "airportID": {
+          "name": "airportID",
           "type": "serial",
           "primaryKey": false,
           "notNull": true,
@@ -60,10 +60,10 @@
       "indexes": {},
       "foreignKeys": {},
       "compositePrimaryKeys": {
-        "airport_aiportID": {
-          "name": "airport_aiportID",
+        "airport_airportID": {
+          "name": "airport_airportID",
           "columns": [
-            "aiportID"
+            "airportID"
           ]
         }
       },
@@ -107,8 +107,8 @@
           "notNull": true,
           "autoincrement": false
         },
-        "phone": {
-          "name": "phone",
+        "phoneNumber": {
+          "name": "phoneNumber",
           "type": "varchar(255)",
           "primaryKey": false,
           "notNull": true,

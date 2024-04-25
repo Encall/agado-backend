@@ -6,7 +6,7 @@ exports.userAccount = mysqlTable( "userAccount",{
     lastName: varchar('lastName',{ length: 255 }).notNull(),
     email: varchar('email',{ length: 255 }).notNull(),
     password: varchar('password',{ length: 255 }).notNull(),
-    phone: varchar('phone',{ length: 255 }).notNull()
+    phoneNumber: varchar('phoneNumber',{ length: 255 }).notNull()
 });
 
 module.exports = exports;

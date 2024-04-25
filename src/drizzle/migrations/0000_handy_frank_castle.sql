@@ -1,12 +1,12 @@
 CREATE TABLE `airport` (
-	`aiportID` serial AUTO_INCREMENT NOT NULL,
+	`airportID` serial AUTO_INCREMENT NOT NULL,
 	`airportName` varchar(255) NOT NULL,
 	`city` varchar(255) NOT NULL,
 	`country` varchar(255) NOT NULL,
 	`address` varchar(255) NOT NULL,
 	`IATACode` varchar(255) NOT NULL,
 	`ICAOCode` varchar(255) NOT NULL,
-	CONSTRAINT `airport_aiportID` PRIMARY KEY(`aiportID`)
+	CONSTRAINT `airport_airportID` PRIMARY KEY(`airportID`)
 );
 --> statement-breakpoint
 CREATE TABLE `userAccount` (
@@ -15,6 +15,6 @@ CREATE TABLE `userAccount` (
 	`lastName` varchar(255) NOT NULL,
 	`email` varchar(255) NOT NULL,
 	`password` varchar(255) NOT NULL,
-	`phone` varchar(255) NOT NULL,
+	`phoneNumber` varchar(255) NOT NULL,
 	CONSTRAINT `userAccount_userID` PRIMARY KEY(`userID`)
 );
