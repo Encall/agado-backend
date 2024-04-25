@@ -1,42 +1,42 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "29f4693e-d150-4ed9-a3fe-39c47df8d7c6",
+  "id": "79afa7ea-137f-464a-b2f0-bb921419e306",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "airport": {
       "name": "airport",
       "columns": {
-        "AiportID": {
-          "name": "AiportID",
+        "aiportID": {
+          "name": "aiportID",
           "type": "serial",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": true
         },
-        "AirportName": {
-          "name": "AirportName",
+        "airportName": {
+          "name": "airportName",
           "type": "varchar(255)",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
-        "City": {
-          "name": "City",
+        "city": {
+          "name": "city",
           "type": "varchar(255)",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
-        "Country": {
-          "name": "Country",
+        "country": {
+          "name": "country",
           "type": "varchar(255)",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
-        "Address": {
-          "name": "Address",
+        "address": {
+          "name": "address",
           "type": "varchar(255)",
           "primaryKey": false,
           "notNull": true,
@@ -60,10 +60,10 @@
       "indexes": {},
       "foreignKeys": {},
       "compositePrimaryKeys": {
-        "airport_AiportID": {
-          "name": "airport_AiportID",
+        "airport_aiportID": {
+          "name": "airport_aiportID",
           "columns": [
-            "AiportID"
+            "aiportID"
           ]
         }
       },
@@ -72,43 +72,43 @@
     "userAccount": {
       "name": "userAccount",
       "columns": {
-        "UserID": {
-          "name": "UserID",
+        "userID": {
+          "name": "userID",
           "type": "serial",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": true
         },
-        "FirstName": {
-          "name": "FirstName",
+        "firstName": {
+          "name": "firstName",
           "type": "varchar(255)",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
-        "LastName": {
-          "name": "LastName",
+        "lastName": {
+          "name": "lastName",
           "type": "varchar(255)",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
-        "Email": {
-          "name": "Email",
+        "email": {
+          "name": "email",
           "type": "varchar(255)",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
-        "Password": {
-          "name": "Password",
+        "password": {
+          "name": "password",
           "type": "varchar(255)",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
-        "Phone": {
-          "name": "Phone",
+        "phone": {
+          "name": "phone",
           "type": "varchar(255)",
           "primaryKey": false,
           "notNull": true,
@@ -118,10 +118,10 @@
       "indexes": {},
       "foreignKeys": {},
       "compositePrimaryKeys": {
-        "userAccount_UserID": {
-          "name": "userAccount_UserID",
+        "userAccount_userID": {
+          "name": "userAccount_userID",
           "columns": [
-            "UserID"
+            "userID"
           ]
         }
       },

@@ -1,10 +1,5 @@
 const {drizzle} = require('drizzle-orm/mysql2');
 const mysql = require('mysql2/promise');
-const schema = require('../drizzle/schema');
-
-
-
-const { mysqlTable, serial, varchar } = require('drizzle-orm/mysql-core');
 
 const connection = mysql.createPool({
   host: process.env.DB_HOST,
@@ -14,21 +9,6 @@ const connection = mysql.createPool({
   multipleStatements: true,
 });
 
-const userAccountschema = mysqlTable( 'userAccount',{
-  UserID: serial('UserID').primaryKey(),
-  FirstName: varchar('FirstName',{ length: 255 }).notNull(),
-  LastName: varchar('LastName',{ length: 255 }).notNull(),
-  Email: varchar('Email',{ length: 255 }).notNull(),
-  Password: varchar('Password',{ length: 255 }).notNull(),
-  Phone: varchar('Phone',{ length: 255 }).notNull()
-});
-
-const db = drizzle(connection, { mode: 'default', userAccountschema });
-
-async function fetchUser() {
-  const user = await db.select().from('userAccount');
-  console.log(user);
-}
-fetchUser();
+const db = drizzle(connection, { mode: 'default'});
 
 module.exports = db;

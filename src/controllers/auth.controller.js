@@ -2,15 +2,22 @@ require('dotenv').config();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const db = require('../configs/db');
-
+const schema = require('../drizzle/schema/userAccount');
 const opts = require('../configs/cookie-config');
+const { sql } = require('drizzle-orm');
 const jwtsecretkey = process.env.JWT_ACCESS_SECRET_KEY;
 const jwtexpiration = process.env.JWT_ACCESS_EXPIRATION;
 
+const userAccount = schema.userAccount;
+
 exports.login = async (req, res) => {
     try {
-        const user = await db.select().from('userAccount').where('email', req.body.email);
-
+        const [user] = await db
+            .select()
+            .from(userAccount)
+            .where(sql`${userAccount.email} = ${req.body.email}`);
+        console.log(req.body.email);
+        console.log(user);
         if (!user || user.length === 0) {
             return res
                 .status(401)
@@ -33,11 +40,11 @@ exports.login = async (req, res) => {
             });
         }
 
-        const accessToken = jwt.sign({ id: user.id }, jwtsecretkey, {
+        const accessToken = jwt.sign({ id: user.userID }, jwtsecretkey, {
             expiresIn: jwtexpiration,
         });
         const refreshToken = jwt.sign(
-            { id: user.id },
+            { id: user.userID },
             process.env.JWT_REFRESH_SECRET_KEY,
             {
                 expiresIn: process.env.JWT_REFRESH_EXPIRATION,
@@ -65,17 +72,11 @@ exports.signup = async (req, res) => {
 
     try {
         // Check if user already exists
-        const [user] = await new Promise((resolve, reject) => {
-            db.query(
-                'SELECT * FROM userAccount WHERE email = ?',
-                [email],
-                function (err, result) {
-                    if (err) reject(err);
-                    resolve(result);
-                }
-            );
-        });
-
+        let [user] = await db
+            .select()
+            .from(userAccount)
+            .where(sql`${userAccount.email} = ${email}`);
+        console.log(user);
         if (user) {
             console.log('Email already exists');
             return res.status(400).json({ message: 'Email already exists.' });
@@ -90,23 +91,38 @@ exports.signup = async (req, res) => {
         });
 
         // Insert the new user into the database
-        await new Promise((resolve, reject) => {
-            db.query(
-                'INSERT INTO userAccount (email, password) VALUES (?, ?)',
-                [email, hashedPassword],
-                function (err, result) {
-                    if (err) reject(err);
-                    resolve(result);
-                }
-            );
+        // await new Promise((resolve, reject) => {
+        //     db.query(
+        //         'INSERT INTO userAccount (email, password) VALUES (?, ?)',
+        //         [email, hashedPassword],
+        //         function (err, result) {
+        //             if (err) reject(err);
+        //             resolve(result);
+        //         }
+        //     );
+        // });
+
+        await db.insert(userAccount).values({
+            email: email,
+            password: hashedPassword,
+            firstName: 'test',
+            lastName: 'test',
+            phone: '1234567890',
         });
 
+        console.log('User created successfully.');
+        [user] = await db
+            .select()
+            .from(userAccount)
+            .where(sql`${userAccount.email} = ${email}`);
+        console.log('query successful');
+        console.log(user);
         // Create a JWT
-        const accessToken = jwt.sign({ id: user.id }, jwtsecretkey, {
+        const accessToken = jwt.sign({ id: user.userID }, jwtsecretkey, {
             expiresIn: jwtexpiration,
         });
         const refreshToken = jwt.sign(
-            { id: user.id },
+            { id: user.userID },
             process.env.JWT_REFRESH_SECRET_KEY,
             {
                 expiresIn: process.env.JWT_REFRESH_EXPIRATION,
