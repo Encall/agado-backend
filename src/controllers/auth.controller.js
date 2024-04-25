@@ -90,18 +90,6 @@ exports.signup = async (req, res) => {
             });
         });
 
-        // Insert the new user into the database
-        // await new Promise((resolve, reject) => {
-        //     db.query(
-        //         'INSERT INTO userAccount (email, password) VALUES (?, ?)',
-        //         [email, hashedPassword],
-        //         function (err, result) {
-        //             if (err) reject(err);
-        //             resolve(result);
-        //         }
-        //     );
-        // });
-
         await db.insert(userAccount).values({
             email: email,
             password: hashedPassword,

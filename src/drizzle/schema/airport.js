@@ -1,7 +1,7 @@
 const { mysqlTable, serial, varchar } = require('drizzle-orm/mysql-core');
 
 exports.airport = mysqlTable( "airport",{
-    aiportID: serial('aiportID').primaryKey(),
+    airportID: serial('airportID').primaryKey(),
     airportName: varchar('airportName',{ length: 255 }).notNull(),
     city: varchar('city',{ length: 255 }).notNull(),
     country: varchar('country',{ length: 255 }).notNull(),
