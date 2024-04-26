@@ -28,10 +28,10 @@ CREATE TABLE `airport` (
 );
 
 CREATE TABLE `booking` (
-	`bookingID` int AUTO_INCREMENT NOT NULL,
-	`passengerID` int,
+	`bookingID` varchar(36) NOT NULL,
+	`passengerID` varchar(36),
 	`flightID` int,
-	`userID` int,
+	`userID` varchar(36),
 	`bookingDateTime` datetime(6),
 	CONSTRAINT `booking_bookingID` PRIMARY KEY(`bookingID`)
 );
@@ -40,7 +40,6 @@ CREATE TABLE `checkIn` (
 	`checkInID` int AUTO_INCREMENT NOT NULL,
 	`ticketNo` int,
 	`checkInDateTime` datetime(6),
-	`seatNumber` varchar(255) NOT NULL,
 	`gate` int NOT NULL,
 	`boardingSequence` int NOT NULL,
 	CONSTRAINT `checkIn_checkInID` PRIMARY KEY(`checkInID`)
@@ -94,14 +93,14 @@ CREATE TABLE `flight` (
 	`arrivalAirportID` int,
 	`arrivalDateTime` datetime(6),
 	`departureDateTime` datetime(6),
-	`flightNo` int NOT NULL,
+	`flightNo` varchar(255) NOT NULL,
 	`currentCapacity` int NOT NULL,
 	`status` varchar(255) NOT NULL,
 	CONSTRAINT `flight_flightID` PRIMARY KEY(`flightID`)
 );
 
 CREATE TABLE `passenger` (
-	`passengerID` int AUTO_INCREMENT NOT NULL,
+	`passengerID` varchar(36) NOT NULL,
 	`firstName` varchar(255) NOT NULL,
 	`lastName` varchar(255) NOT NULL,
 	`email` varchar(255) NOT NULL,
@@ -110,9 +109,9 @@ CREATE TABLE `passenger` (
 );
 
 CREATE TABLE `payment` (
-	`paymentID` int AUTO_INCREMENT NOT NULL,
-	`bookingID` int,
-	`userID` int,
+	`paymentID` varchar(36) NOT NULL,
+	`bookingID` varchar(36),
+	`userID` varchar(36),
 	`amount` float NOT NULL,
 	`paymentDateTime` datetime(6),
 	`paymentMethod` varchar(255) NOT NULL,
@@ -122,7 +121,7 @@ CREATE TABLE `payment` (
 CREATE TABLE `ticket` (
 	`ticketNo` int AUTO_INCREMENT NOT NULL,
 	`bookingID` varchar(255) NOT NULL,
-	`passengerID` serial AUTO_INCREMENT,
+	`passengerID` varchar(36),
 	`price` float NOT NULL,
 	`seatNumber` varchar(255) NOT NULL,
 	`class` varchar(255) NOT NULL,

@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "6170fe10-a7f2-4f7e-aabc-13a8cfa359b6",
+  "id": "f7d4020f-cf0b-485b-8601-e63ce3343a47",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "aircraft": {
@@ -190,14 +190,14 @@
       "columns": {
         "bookingID": {
           "name": "bookingID",
-          "type": "int",
+          "type": "varchar(36)",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": true
+          "autoincrement": false
         },
         "passengerID": {
           "name": "passengerID",
-          "type": "int",
+          "type": "varchar(36)",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -211,7 +211,7 @@
         },
         "userID": {
           "name": "userID",
-          "type": "int",
+          "type": "varchar(36)",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -298,13 +298,6 @@
           "type": "datetime(6)",
           "primaryKey": false,
           "notNull": false,
-          "autoincrement": false
-        },
-        "seatNumber": {
-          "name": "seatNumber",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": true,
           "autoincrement": false
         },
         "gate": {
@@ -711,7 +704,7 @@
         },
         "flightNo": {
           "name": "flightNo",
-          "type": "int",
+          "type": "varchar(255)",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -788,10 +781,10 @@
       "columns": {
         "passengerID": {
           "name": "passengerID",
-          "type": "int",
+          "type": "varchar(36)",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": true
+          "autoincrement": false
         },
         "firstName": {
           "name": "firstName",
@@ -839,21 +832,21 @@
       "columns": {
         "paymentID": {
           "name": "paymentID",
-          "type": "int",
+          "type": "varchar(36)",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": true
+          "autoincrement": false
         },
         "bookingID": {
           "name": "bookingID",
-          "type": "int",
+          "type": "varchar(36)",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
         "userID": {
           "name": "userID",
-          "type": "int",
+          "type": "varchar(36)",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -938,10 +931,10 @@
         },
         "passengerID": {
           "name": "passengerID",
-          "type": "serial",
+          "type": "varchar(36)",
           "primaryKey": false,
           "notNull": false,
-          "autoincrement": true
+          "autoincrement": false
         },
         "price": {
           "name": "price",

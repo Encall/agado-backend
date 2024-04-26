@@ -10,7 +10,6 @@ const checkIn = mysqlTable('checkIn', {
     checkInID: int('checkInID').primaryKey().autoincrement(),
     ticketNo: int('ticketNo').references(() => ticket.ticketNo),
     checkInDateTime: datetime('checkInDateTime', { mode: 'date', fsp: 6 }),
-    seatNumber: varchar('seatNumber', { length: 255 }).notNull(),
     gate: int('gate').notNull(),
     boardingSequence: int('boardingSequence').notNull(),
 });

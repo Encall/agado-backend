@@ -18,7 +18,7 @@ const flight = mysqlTable('flight', {
     ),
     arrivalDateTime: datetime('arrivalDateTime', { mode: 'date', fsp: 6 }),
     departureDateTime: datetime('departureDateTime', { mode: 'date', fsp: 6 }),
-    flightNo: int('flightNo').notNull(),
+    flightNo: varchar('flightNo', { length: 255 }).notNull(),
     currentCapacity: int('currentCapacity').notNull(),
     status: varchar('status', { length: 255 }).notNull(),
 });
