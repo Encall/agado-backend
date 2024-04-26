@@ -4,13 +4,11 @@ const db = require('../configs/db');
 const authRoute = require('./auth.route');
 const schema = require('../drizzle/schema');
 
-const airport = schema.airport;
-
 router.use('/', authRoute);
 
 router.get('/airports', async (req, res) => {
     try {
-        const airports = await db.select().from(airport);
+        const airports = await db.select().from(schema.airport);
         res.json(airports);
     } catch (error) {
         console.error(error);

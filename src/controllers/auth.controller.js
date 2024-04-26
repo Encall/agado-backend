@@ -8,14 +8,12 @@ const { sql, eq } = require('drizzle-orm');
 const jwtsecretkey = process.env.JWT_ACCESS_SECRET_KEY;
 const jwtexpiration = process.env.JWT_ACCESS_EXPIRATION;
 
-const userAccount = schema.userAccount;
-
 exports.login = async (req, res) => {
     try {
         const [user] = await db
             .select()
-            .from(userAccount)
-            .where(eq(userAccount.email, req.body.email));
+            .from(schema.userAccount)
+            .where(eq(schema.userAccount.email, req.body.email));
         if (!user || user.length === 0) {
             return res
                 .status(401)
@@ -72,8 +70,8 @@ exports.signup = async (req, res) => {
         // Check if user already exists
         var [user] = await db
             .select()
-            .from(userAccount)
-            .where(eq(userAccount.email, req.body.email));
+            .from(schema.userAccount)
+            .where(eq(schema.userAccount.email, req.body.email));
         if (user) {
             console.log('Email already exists');
             return res.status(400).json({ message: 'Email already exists.' });
@@ -87,7 +85,7 @@ exports.signup = async (req, res) => {
             });
         });
 
-        await db.insert(userAccount).values({
+        await db.insert(schema.userAccount).values({
             email: email,
             password: hashedPassword,
             firstName: firstName,
@@ -98,8 +96,8 @@ exports.signup = async (req, res) => {
         console.log('User: %s created successfully.', email);
         [user] = await db
             .select()
-            .from(userAccount)
-            .where(sql`${userAccount.userID} = LAST_INSERT_ID()`);
+            .from(schema.userAccount)
+            .where(sql`${schema.userAccount.userID} = LAST_INSERT_ID()`);
 
         // Create a JWT
         const accessToken = jwt.sign({ id: user.userID }, jwtsecretkey, {
@@ -149,8 +147,8 @@ exports.jwtRefreshTokenValidate = (req, res, next) => {
 
 exports.refresh = async (req, res) => {
     db.select()
-        .from(userAccount)
-        .where(eq(userAccount.userID, req.user.id))
+        .from(schema.userAccount)
+        .where(eq(schema.userAccount.userID, req.user.id))
         .then(([user]) => {
             if (!user) {
                 return res.status(404).json({ error: 'User not found' });
@@ -167,7 +165,7 @@ exports.refresh = async (req, res) => {
                 { expiresIn: process.env.JWT_REFRESH_EXPIRATION }
             );
 
-            console.log('User: %s has refresh acces token.', user.email);
+            console.log('User: %s has refresh access token.', user.email);
             res.cookie('accessToken', accessToken, opts.options);
             res.cookie('refreshToken', refreshToken, opts.refreshOptions);
             return res.status(200).json('Token Refreshed').send();
