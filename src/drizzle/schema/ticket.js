@@ -1,5 +1,5 @@
-const { int, mysqlTable, serial, varchar } = require('drizzle-orm/mysql-core');
-const {passenger} = require('./passenger');
+const { int, float,mysqlTable, serial, varchar } = require('drizzle-orm/mysql-core');
+const passenger = require('./passenger');
 const ticket = mysqlTable( "ticket",{
     ticketNo: int('ticketNo').primaryKey().autoincrement(),
     bookingID: varchar('bookingID', { length: 255 }).notNull(),

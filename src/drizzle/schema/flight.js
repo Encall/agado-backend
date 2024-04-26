@@ -1,6 +1,6 @@
 const { int,float,date,datetime, mysqlTable, serial, varchar } = require('drizzle-orm/mysql-core');
-const {aircraft} = require('./aircraft');
-const {airport} = require('./airport');
+const aircraft = require('./aircraft');
+const airport = require('./airport');
 const flight = mysqlTable("flight", {
     flightID: int('flightID').primaryKey().autoincrement(),
     aircraftID: int('aircraftID').references(()=>aircraft.aircraftID),

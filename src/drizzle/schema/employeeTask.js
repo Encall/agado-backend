@@ -1,6 +1,6 @@
-const { int, float,date, datetime, mysqlTable, serial, varchar } = require('drizzle-orm/mysql-core');
-const {employee} = require('./employee');
-const {flight} = require('./flight');
+const { int, float,date, datetime, mysqlTable, serial,primaryKey, varchar } = require('drizzle-orm/mysql-core');
+const employee = require('./employee');
+const flight = require('./flight');
 const employeeTask = mysqlTable("employeeTask", {
     employeeID : int('employeeID').references(()=>employee.employeeID),
     //An example datetime value with this format could look like: 2024-04-26 16:17:00.123456.

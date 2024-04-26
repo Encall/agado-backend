@@ -1,5 +1,5 @@
 const { int,float,date,datetime ,mysqlTable, serial, varchar } = require('drizzle-orm/mysql-core');
-
+const department = require('./department');
 const employee = mysqlTable("employee", {
     employeeID: int('employeeID').primaryKey().autoincrement(),
     password: varchar('password', { length: 255 }).notNull(),
