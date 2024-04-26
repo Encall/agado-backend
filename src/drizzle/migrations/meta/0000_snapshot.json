@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "d63ddb9b-4618-4694-9dfb-345ec5659a14",
+  "id": "6170fe10-a7f2-4f7e-aabc-13a8cfa359b6",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "aircraft": {

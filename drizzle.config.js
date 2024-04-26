@@ -11,6 +11,7 @@ export default defineConfig({
         port: process.env.DB_PORT,
         database: process.env.DB_NAME,
     },
+    breakpoints: false,
     // verbose: true,
     // strict: true
 });

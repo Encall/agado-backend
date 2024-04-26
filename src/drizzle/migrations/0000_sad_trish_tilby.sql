@@ -7,7 +7,7 @@ CREATE TABLE `aircraft` (
 	`maxCapacity` int NOT NULL,
 	CONSTRAINT `aircraft_aircraftID` PRIMARY KEY(`aircraftID`)
 );
---> statement-breakpoint
+
 CREATE TABLE `airline` (
 	`airlineID` int AUTO_INCREMENT NOT NULL,
 	`airlineName` varchar(255) NOT NULL,
@@ -15,7 +15,7 @@ CREATE TABLE `airline` (
 	`ICAOCode` varchar(255) NOT NULL,
 	CONSTRAINT `airline_airlineID` PRIMARY KEY(`airlineID`)
 );
---> statement-breakpoint
+
 CREATE TABLE `airport` (
 	`airportID` int AUTO_INCREMENT NOT NULL,
 	`airportName` varchar(255) NOT NULL,
@@ -26,7 +26,7 @@ CREATE TABLE `airport` (
 	`ICAOCode` varchar(255) NOT NULL,
 	CONSTRAINT `airport_airportID` PRIMARY KEY(`airportID`)
 );
---> statement-breakpoint
+
 CREATE TABLE `booking` (
 	`bookingID` int AUTO_INCREMENT NOT NULL,
 	`passengerID` int,
@@ -35,7 +35,7 @@ CREATE TABLE `booking` (
 	`bookingDateTime` datetime(6),
 	CONSTRAINT `booking_bookingID` PRIMARY KEY(`bookingID`)
 );
---> statement-breakpoint
+
 CREATE TABLE `checkIn` (
 	`checkInID` int AUTO_INCREMENT NOT NULL,
 	`ticketNo` int,
@@ -45,14 +45,14 @@ CREATE TABLE `checkIn` (
 	`boardingSequence` int NOT NULL,
 	CONSTRAINT `checkIn_checkInID` PRIMARY KEY(`checkInID`)
 );
---> statement-breakpoint
+
 CREATE TABLE `department` (
 	`departmentID` int AUTO_INCREMENT NOT NULL,
 	`departmentName` varchar(255) NOT NULL,
 	`airlineID` int,
 	CONSTRAINT `department_departmentID` PRIMARY KEY(`departmentID`)
 );
---> statement-breakpoint
+
 CREATE TABLE `employee` (
 	`employeeID` int AUTO_INCREMENT NOT NULL,
 	`password` varchar(255) NOT NULL,
@@ -67,7 +67,7 @@ CREATE TABLE `employee` (
 	`endDate` date,
 	CONSTRAINT `employee_employeeID` PRIMARY KEY(`employeeID`)
 );
---> statement-breakpoint
+
 CREATE TABLE `employeeTask` (
 	`employeeID` int NOT NULL,
 	`assignDateTime` datetime(6) NOT NULL,
@@ -77,7 +77,7 @@ CREATE TABLE `employeeTask` (
 	`flightID` int,
 	CONSTRAINT `employeeTask_employeeID_assignDateTime_pk` PRIMARY KEY(`employeeID`,`assignDateTime`)
 );
---> statement-breakpoint
+
 CREATE TABLE `externalService` (
 	`externalServiceID` int AUTO_INCREMENT NOT NULL,
 	`ticketNo` int,
@@ -86,7 +86,7 @@ CREATE TABLE `externalService` (
 	`serviceFee` float NOT NULL,
 	CONSTRAINT `externalService_externalServiceID` PRIMARY KEY(`externalServiceID`)
 );
---> statement-breakpoint
+
 CREATE TABLE `flight` (
 	`flightID` int AUTO_INCREMENT NOT NULL,
 	`aircraftID` int,
@@ -99,7 +99,7 @@ CREATE TABLE `flight` (
 	`status` varchar(255) NOT NULL,
 	CONSTRAINT `flight_flightID` PRIMARY KEY(`flightID`)
 );
---> statement-breakpoint
+
 CREATE TABLE `passenger` (
 	`passengerID` int AUTO_INCREMENT NOT NULL,
 	`firstName` varchar(255) NOT NULL,
@@ -108,7 +108,7 @@ CREATE TABLE `passenger` (
 	`phoneNumber` varchar(255) NOT NULL,
 	CONSTRAINT `passenger_passengerID` PRIMARY KEY(`passengerID`)
 );
---> statement-breakpoint
+
 CREATE TABLE `payment` (
 	`paymentID` int AUTO_INCREMENT NOT NULL,
 	`bookingID` int,
@@ -118,7 +118,7 @@ CREATE TABLE `payment` (
 	`paymentMethod` varchar(255) NOT NULL,
 	CONSTRAINT `payment_paymentID` PRIMARY KEY(`paymentID`)
 );
---> statement-breakpoint
+
 CREATE TABLE `ticket` (
 	`ticketNo` int AUTO_INCREMENT NOT NULL,
 	`bookingID` varchar(255) NOT NULL,
@@ -128,7 +128,7 @@ CREATE TABLE `ticket` (
 	`class` varchar(255) NOT NULL,
 	CONSTRAINT `ticket_ticketNo` PRIMARY KEY(`ticketNo`)
 );
---> statement-breakpoint
+
 CREATE TABLE `userAccount` (
 	`userID` varchar(36) NOT NULL,
 	`firstName` varchar(255) NOT NULL,
@@ -138,20 +138,20 @@ CREATE TABLE `userAccount` (
 	`phoneNumber` varchar(255) NOT NULL,
 	CONSTRAINT `userAccount_userID` PRIMARY KEY(`userID`)
 );
---> statement-breakpoint
-ALTER TABLE `aircraft` ADD CONSTRAINT `aircraft_airlineID_airline_airlineID_fk` FOREIGN KEY (`airlineID`) REFERENCES `airline`(`airlineID`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE `booking` ADD CONSTRAINT `booking_passengerID_passenger_passengerID_fk` FOREIGN KEY (`passengerID`) REFERENCES `passenger`(`passengerID`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE `booking` ADD CONSTRAINT `booking_flightID_flight_flightID_fk` FOREIGN KEY (`flightID`) REFERENCES `flight`(`flightID`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE `booking` ADD CONSTRAINT `booking_userID_userAccount_userID_fk` FOREIGN KEY (`userID`) REFERENCES `userAccount`(`userID`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE `checkIn` ADD CONSTRAINT `checkIn_ticketNo_ticket_ticketNo_fk` FOREIGN KEY (`ticketNo`) REFERENCES `ticket`(`ticketNo`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE `department` ADD CONSTRAINT `department_airlineID_airline_airlineID_fk` FOREIGN KEY (`airlineID`) REFERENCES `airline`(`airlineID`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE `employee` ADD CONSTRAINT `employee_departmentID_department_departmentID_fk` FOREIGN KEY (`departmentID`) REFERENCES `department`(`departmentID`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE `employeeTask` ADD CONSTRAINT `employeeTask_employeeID_employee_employeeID_fk` FOREIGN KEY (`employeeID`) REFERENCES `employee`(`employeeID`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE `employeeTask` ADD CONSTRAINT `employeeTask_flightID_flight_flightID_fk` FOREIGN KEY (`flightID`) REFERENCES `flight`(`flightID`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE `externalService` ADD CONSTRAINT `externalService_ticketNo_ticket_ticketNo_fk` FOREIGN KEY (`ticketNo`) REFERENCES `ticket`(`ticketNo`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE `flight` ADD CONSTRAINT `flight_aircraftID_aircraft_aircraftID_fk` FOREIGN KEY (`aircraftID`) REFERENCES `aircraft`(`aircraftID`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE `flight` ADD CONSTRAINT `flight_departureAirportID_airport_airportID_fk` FOREIGN KEY (`departureAirportID`) REFERENCES `airport`(`airportID`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE `flight` ADD CONSTRAINT `flight_arrivalAirportID_airport_airportID_fk` FOREIGN KEY (`arrivalAirportID`) REFERENCES `airport`(`airportID`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE `payment` ADD CONSTRAINT `payment_bookingID_booking_bookingID_fk` FOREIGN KEY (`bookingID`) REFERENCES `booking`(`bookingID`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE `payment` ADD CONSTRAINT `payment_userID_booking_userID_fk` FOREIGN KEY (`userID`) REFERENCES `booking`(`userID`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+
+ALTER TABLE `aircraft` ADD CONSTRAINT `aircraft_airlineID_airline_airlineID_fk` FOREIGN KEY (`airlineID`) REFERENCES `airline`(`airlineID`) ON DELETE no action ON UPDATE no action;
+ALTER TABLE `booking` ADD CONSTRAINT `booking_passengerID_passenger_passengerID_fk` FOREIGN KEY (`passengerID`) REFERENCES `passenger`(`passengerID`) ON DELETE no action ON UPDATE no action;
+ALTER TABLE `booking` ADD CONSTRAINT `booking_flightID_flight_flightID_fk` FOREIGN KEY (`flightID`) REFERENCES `flight`(`flightID`) ON DELETE no action ON UPDATE no action;
+ALTER TABLE `booking` ADD CONSTRAINT `booking_userID_userAccount_userID_fk` FOREIGN KEY (`userID`) REFERENCES `userAccount`(`userID`) ON DELETE no action ON UPDATE no action;
+ALTER TABLE `checkIn` ADD CONSTRAINT `checkIn_ticketNo_ticket_ticketNo_fk` FOREIGN KEY (`ticketNo`) REFERENCES `ticket`(`ticketNo`) ON DELETE no action ON UPDATE no action;
+ALTER TABLE `department` ADD CONSTRAINT `department_airlineID_airline_airlineID_fk` FOREIGN KEY (`airlineID`) REFERENCES `airline`(`airlineID`) ON DELETE no action ON UPDATE no action;
+ALTER TABLE `employee` ADD CONSTRAINT `employee_departmentID_department_departmentID_fk` FOREIGN KEY (`departmentID`) REFERENCES `department`(`departmentID`) ON DELETE no action ON UPDATE no action;
+ALTER TABLE `employeeTask` ADD CONSTRAINT `employeeTask_employeeID_employee_employeeID_fk` FOREIGN KEY (`employeeID`) REFERENCES `employee`(`employeeID`) ON DELETE no action ON UPDATE no action;
+ALTER TABLE `employeeTask` ADD CONSTRAINT `employeeTask_flightID_flight_flightID_fk` FOREIGN KEY (`flightID`) REFERENCES `flight`(`flightID`) ON DELETE no action ON UPDATE no action;
+ALTER TABLE `externalService` ADD CONSTRAINT `externalService_ticketNo_ticket_ticketNo_fk` FOREIGN KEY (`ticketNo`) REFERENCES `ticket`(`ticketNo`) ON DELETE no action ON UPDATE no action;
+ALTER TABLE `flight` ADD CONSTRAINT `flight_aircraftID_aircraft_aircraftID_fk` FOREIGN KEY (`aircraftID`) REFERENCES `aircraft`(`aircraftID`) ON DELETE no action ON UPDATE no action;
+ALTER TABLE `flight` ADD CONSTRAINT `flight_departureAirportID_airport_airportID_fk` FOREIGN KEY (`departureAirportID`) REFERENCES `airport`(`airportID`) ON DELETE no action ON UPDATE no action;
+ALTER TABLE `flight` ADD CONSTRAINT `flight_arrivalAirportID_airport_airportID_fk` FOREIGN KEY (`arrivalAirportID`) REFERENCES `airport`(`airportID`) ON DELETE no action ON UPDATE no action;
+ALTER TABLE `payment` ADD CONSTRAINT `payment_bookingID_booking_bookingID_fk` FOREIGN KEY (`bookingID`) REFERENCES `booking`(`bookingID`) ON DELETE no action ON UPDATE no action;
+ALTER TABLE `payment` ADD CONSTRAINT `payment_userID_booking_userID_fk` FOREIGN KEY (`userID`) REFERENCES `booking`(`userID`) ON DELETE no action ON UPDATE no action;
 ALTER TABLE `ticket` ADD CONSTRAINT `ticket_passengerID_passenger_passengerID_fk` FOREIGN KEY (`passengerID`) REFERENCES `passenger`(`passengerID`) ON DELETE no action ON UPDATE no action;
