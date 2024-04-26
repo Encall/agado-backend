@@ -1,0 +1,13 @@
+{
+  "version": "5",
+  "dialect": "mysql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1714153470708,
+      "tag": "0000_lovely_wrecking_crew",
+      "breakpoints": true
+    }
+  ]
+}
