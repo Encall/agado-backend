@@ -3,6 +3,9 @@ const router = express.Router();
 const passport = require('passport');
 const db = require('../configs/db');
 const authRoute = require('./auth.route');
+const schema = require('../drizzle/schema/airport');
+
+const airportSchema = schema.airport;
 
 router.use('/', authRoute);
 
@@ -18,12 +21,7 @@ router.get(
     '/airports',
     passport.authenticate('jwt', { session: false }),
     async (req, res) => {
-        const airports = await new Promise((resolve, reject) => {
-            db.query('SELECT * FROM Airport', function (err, result) {
-                if (err) reject(err);
-                resolve(result);
-            });
-        });
+        const airports = await db.select().from(airportSchema);
         res.json(airports);
     }
 );

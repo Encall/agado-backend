@@ -2,24 +2,22 @@ require('dotenv').config();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const db = require('../configs/db');
-
+const schema = require('../drizzle/schema/userAccount');
 const opts = require('../configs/cookie-config');
+const { sql, eq } = require('drizzle-orm');
 const jwtsecretkey = process.env.JWT_ACCESS_SECRET_KEY;
 const jwtexpiration = process.env.JWT_ACCESS_EXPIRATION;
 
+const userAccount = schema.userAccount;
+
 exports.login = async (req, res) => {
     try {
-        const [user] = await new Promise((resolve, reject) => {
-            db.query(
-                'SELECT * FROM userAccount WHERE email = ?',
-                [req.body.email],
-                function (err, result) {
-                    if (err) reject(err);
-                    resolve(result);
-                }
-            );
-        });
-
+        const [user] = await db
+            .select()
+            .from(userAccount)
+            .where(eq(userAccount.email, req.body.email));
+        console.log(req.body.email);
+        console.log(user);
         if (!user || user.length === 0) {
             return res
                 .status(401)
@@ -42,11 +40,11 @@ exports.login = async (req, res) => {
             });
         }
 
-        const accessToken = jwt.sign({ id: user.id }, jwtsecretkey, {
+        const accessToken = jwt.sign({ id: user.userID }, jwtsecretkey, {
             expiresIn: jwtexpiration,
         });
         const refreshToken = jwt.sign(
-            { id: user.id },
+            { id: user.userID },
             process.env.JWT_REFRESH_SECRET_KEY,
             {
                 expiresIn: process.env.JWT_REFRESH_EXPIRATION,
@@ -64,7 +62,7 @@ exports.login = async (req, res) => {
 };
 
 exports.signup = async (req, res) => {
-    const { email, password } = req.body;
+    const { email, password, firstName, lastName, phoneNumber } = req.body;
     // Check if email and password are provided
     if (!email || !password) {
         return res
@@ -74,17 +72,11 @@ exports.signup = async (req, res) => {
 
     try {
         // Check if user already exists
-        const [user] = await new Promise((resolve, reject) => {
-            db.query(
-                'SELECT * FROM userAccount WHERE email = ?',
-                [email],
-                function (err, result) {
-                    if (err) reject(err);
-                    resolve(result);
-                }
-            );
-        });
-
+        var [user] = await db
+            .select()
+            .from(userAccount)
+            .where(eq(userAccount.email, req.body.email));
+        console.log(user);
         if (user) {
             console.log('Email already exists');
             return res.status(400).json({ message: 'Email already exists.' });
@@ -98,24 +90,27 @@ exports.signup = async (req, res) => {
             });
         });
 
-        // Insert the new user into the database
-        await new Promise((resolve, reject) => {
-            db.query(
-                'INSERT INTO userAccount (email, password) VALUES (?, ?)',
-                [email, hashedPassword],
-                function (err, result) {
-                    if (err) reject(err);
-                    resolve(result);
-                }
-            );
+        await db.insert(userAccount).values({
+            email: email,
+            password: hashedPassword,
+            firstName: firstName,
+            lastName: lastName,
+            phoneNumber: phoneNumber,
         });
 
+        console.log('User created successfully.');
+        [user] = await db
+            .select()
+            .from(userAccount)
+            .where(sql`${userAccount.userID} = LAST_INSERT_ID()`);
+        console.log('query successful');
+        console.log(user);
         // Create a JWT
-        const accessToken = jwt.sign({ id: user.id }, jwtsecretkey, {
+        const accessToken = jwt.sign({ id: user.userID }, jwtsecretkey, {
             expiresIn: jwtexpiration,
         });
         const refreshToken = jwt.sign(
-            { id: user.id },
+            { id: user.userID },
             process.env.JWT_REFRESH_SECRET_KEY,
             {
                 expiresIn: process.env.JWT_REFRESH_EXPIRATION,
@@ -158,27 +153,22 @@ exports.jwtRefreshTokenValidate = (req, res, next) => {
 };
 
 exports.refresh = async (req, res) => {
-    db.query(
-        'SELECT * FROM userAccount WHERE id = ?',
-        [req.user.id],
-        function (err, result) {
-            if (err) {
-                console.error(err);
-                return res.status(500).json({ error: 'Internal server error' });
-            }
-
-            if (result.length === 0) {
+    db.select()
+        .from(userAccount)
+        .where(eq(userAccount.userID, req.user.id))
+        .then(([user]) => {
+            // console.log(user)
+            if (!user) {
                 return res.status(404).json({ error: 'User not found' });
             }
 
-            const user = result[0];
             const accessToken = jwt.sign(
-                { id: user.id },
+                { id: user.userID },
                 process.env.JWT_ACCESS_SECRET_KEY,
                 { expiresIn: process.env.JWT_ACCESS_EXPIRATION }
             );
             const refreshToken = jwt.sign(
-                { id: user.id },
+                { id: user.userID },
                 process.env.JWT_REFRESH_SECRET_KEY,
                 { expiresIn: process.env.JWT_REFRESH_EXPIRATION }
             );
@@ -186,6 +176,9 @@ exports.refresh = async (req, res) => {
             res.cookie('accessToken', accessToken, opts.options);
             res.cookie('refreshToken', refreshToken, opts.refreshOptions);
             return res.status(200).send();
-        }
-    );
+        })
+        .catch((err) => {
+            console.error(err);
+            return res.status(500).json({ error: 'Internal server error' });
+        });
 };
