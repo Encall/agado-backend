@@ -7,6 +7,7 @@ const opts = require('../configs/cookie-config');
 const { sql, eq } = require('drizzle-orm');
 const jwtsecretkey = process.env.JWT_ACCESS_SECRET_KEY;
 const jwtexpiration = process.env.JWT_ACCESS_EXPIRATION;
+const { v4: uuidv4 } = require('uuid');
 
 exports.login = async (req, res) => {
     try {
@@ -50,7 +51,12 @@ exports.login = async (req, res) => {
         res.cookie('accessToken', accessToken, opts.options);
         res.cookie('refreshToken', refreshToken, opts.refreshOptions);
         console.log('User: %s logged in successfully.', user.email);
-        return res.status(200).json('Login Successfully').send();
+        return res
+            .status(200)
+            .json({
+                message: 'Login successful.',
+            })
+            .send();
     } catch (error) {
         console.log(error);
         return res.status(500).json({ error: 'Internal server error' });
@@ -59,11 +65,12 @@ exports.login = async (req, res) => {
 
 exports.signup = async (req, res) => {
     const { email, password, firstName, lastName, phoneNumber } = req.body;
-    // Check if email and password are provided
-    if (!email || !password) {
-        return res
-            .status(400)
-            .json({ message: 'Email and password are required.' });
+    // Check if all fields are provided
+    if (!email || !password || !firstName || !lastName || !phoneNumber) {
+        return res.status(400).json({
+            message:
+                'All fields are required. Please provide email, password, first name, last name, and phone number.',
+        });
     }
 
     try {
@@ -85,7 +92,11 @@ exports.signup = async (req, res) => {
             });
         });
 
+        // Generate UUID for user
+        const uuid = uuidv4();
+
         await db.insert(schema.userAccount).values({
+            userID: uuid,
             email: email,
             password: hashedPassword,
             firstName: firstName,
@@ -93,25 +104,21 @@ exports.signup = async (req, res) => {
             phoneNumber: phoneNumber,
         });
 
-        console.log('User: %s created successfully.', email);
-        [user] = await db
-            .select()
-            .from(schema.userAccount)
-            .where(sql`${schema.userAccount.userID} = LAST_INSERT_ID()`);
+        console.log('User: %s Email: %s created successfully.', uuid, email);
 
         // Create a JWT
-        const accessToken = jwt.sign({ id: user.userID }, jwtsecretkey, {
+        const accessToken = jwt.sign({ id: uuid }, jwtsecretkey, {
             expiresIn: jwtexpiration,
         });
         const refreshToken = jwt.sign(
-            { id: user.userID },
+            { id: uuid },
             process.env.JWT_REFRESH_SECRET_KEY,
             {
                 expiresIn: process.env.JWT_REFRESH_EXPIRATION,
             }
         );
 
-        console.log('User: %s signed up successfully.', user.email);
+        console.log('User: %s signed up successfully.', email);
         res.cookie('accessToken', accessToken, opts.options);
         res.cookie('refreshToken', refreshToken, opts.refreshOptions);
         res.status(200)
@@ -120,6 +127,7 @@ exports.signup = async (req, res) => {
             })
             .send();
     } catch (error) {
+        console.log(error);
         return res.status(500).json({
             message: 'Error occurred during signup.',
         });
@@ -168,7 +176,12 @@ exports.refresh = async (req, res) => {
             console.log('User: %s has refresh access token.', user.email);
             res.cookie('accessToken', accessToken, opts.options);
             res.cookie('refreshToken', refreshToken, opts.refreshOptions);
-            return res.status(200).json('Token Refreshed').send();
+            return res
+                .status(200)
+                .json({
+                    message: 'Token refresh successful.',
+                })
+                .send();
         })
         .catch((err) => {
             console.error(err);

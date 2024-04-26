@@ -10,7 +10,7 @@ CREATE TABLE `airport` (
 );
 --> statement-breakpoint
 CREATE TABLE `userAccount` (
-	`userID` serial AUTO_INCREMENT NOT NULL,
+	`userID` varchar(36) NOT NULL,
 	`firstName` varchar(255) NOT NULL,
 	`lastName` varchar(255) NOT NULL,
 	`email` varchar(255) NOT NULL,
