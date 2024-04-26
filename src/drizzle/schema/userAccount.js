@@ -1,6 +1,6 @@
 const { mysqlTable, serial, varchar } = require('drizzle-orm/mysql-core');
 
-exports.userAccount = mysqlTable( "userAccount",{
+const userAccount = mysqlTable( "userAccount",{
     userID: serial('userID').primaryKey(),
     firstName: varchar('firstName',{ length: 255 }).notNull(),
     lastName: varchar('lastName',{ length: 255 }).notNull(),
@@ -9,4 +9,4 @@ exports.userAccount = mysqlTable( "userAccount",{
     phoneNumber: varchar('phoneNumber',{ length: 255 }).notNull()
 });
 
-module.exports = exports;
+module.exports = userAccount;

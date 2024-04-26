@@ -2,7 +2,7 @@ require('dotenv').config();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const db = require('../configs/db');
-const schema = require('../drizzle/schema/userAccount');
+const schema = require('../drizzle/schema');
 const opts = require('../configs/cookie-config');
 const { sql, eq } = require('drizzle-orm');
 const jwtsecretkey = process.env.JWT_ACCESS_SECRET_KEY;

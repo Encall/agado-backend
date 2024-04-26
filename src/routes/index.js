@@ -3,7 +3,7 @@ const router = express.Router();
 const passport = require('passport');
 const db = require('../configs/db');
 const authRoute = require('./auth.route');
-const schema = require('../drizzle/schema/airport');
+const schema = require('../drizzle/schema');
 
 const airportSchema = schema.airport;
 
