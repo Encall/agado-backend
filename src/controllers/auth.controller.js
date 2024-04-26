@@ -16,8 +16,6 @@ exports.login = async (req, res) => {
             .select()
             .from(userAccount)
             .where(eq(userAccount.email, req.body.email));
-        console.log(req.body.email);
-        console.log(user);
         if (!user || user.length === 0) {
             return res
                 .status(401)
@@ -53,8 +51,8 @@ exports.login = async (req, res) => {
 
         res.cookie('accessToken', accessToken, opts.options);
         res.cookie('refreshToken', refreshToken, opts.refreshOptions);
-
-        return res.status(200).send();
+        console.log('User: %s logged in successfully.', user.email);
+        return res.status(200).json('Login Successfully').send();
     } catch (error) {
         console.log(error);
         return res.status(500).json({ error: 'Internal server error' });
@@ -76,7 +74,6 @@ exports.signup = async (req, res) => {
             .select()
             .from(userAccount)
             .where(eq(userAccount.email, req.body.email));
-        console.log(user);
         if (user) {
             console.log('Email already exists');
             return res.status(400).json({ message: 'Email already exists.' });
@@ -98,13 +95,12 @@ exports.signup = async (req, res) => {
             phoneNumber: phoneNumber,
         });
 
-        console.log('User created successfully.');
+        console.log('User: %s created successfully.', email);
         [user] = await db
             .select()
             .from(userAccount)
             .where(sql`${userAccount.userID} = LAST_INSERT_ID()`);
-        console.log('query successful');
-        console.log(user);
+
         // Create a JWT
         const accessToken = jwt.sign({ id: user.userID }, jwtsecretkey, {
             expiresIn: jwtexpiration,
@@ -117,9 +113,9 @@ exports.signup = async (req, res) => {
             }
         );
 
+        console.log('User: %s signed up successfully.', user.email);
         res.cookie('accessToken', accessToken, opts.options);
         res.cookie('refreshToken', refreshToken, opts.refreshOptions);
-
         res.status(200)
             .json({
                 message: 'Signup successful.',
@@ -144,7 +140,6 @@ exports.jwtRefreshTokenValidate = (req, res, next) => {
             process.env.JWT_REFRESH_SECRET_KEY
         );
         req.user = decoded;
-        console.log(req.user);
         next();
     } catch (error) {
         console.log('Error verifying refresh token:', error);
@@ -157,7 +152,6 @@ exports.refresh = async (req, res) => {
         .from(userAccount)
         .where(eq(userAccount.userID, req.user.id))
         .then(([user]) => {
-            // console.log(user)
             if (!user) {
                 return res.status(404).json({ error: 'User not found' });
             }
@@ -173,9 +167,10 @@ exports.refresh = async (req, res) => {
                 { expiresIn: process.env.JWT_REFRESH_EXPIRATION }
             );
 
+            console.log('User: %s has refresh acces token.', user.email);
             res.cookie('accessToken', accessToken, opts.options);
             res.cookie('refreshToken', refreshToken, opts.refreshOptions);
-            return res.status(200).send();
+            return res.status(200).json('Token Refreshed').send();
         })
         .catch((err) => {
             console.error(err);
