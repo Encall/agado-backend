@@ -1,10 +1,15 @@
-const { int, datetime, mysqlTable,varchar } = require('drizzle-orm/mysql-core');
+const {
+    int,
+    datetime,
+    mysqlTable,
+    varchar,
+} = require('drizzle-orm/mysql-core');
 const ticket = require('./ticket');
 
-const checkIn = mysqlTable("checkIn", {
+const checkIn = mysqlTable('checkIn', {
     checkInID: int('checkInID').primaryKey().autoincrement(),
-    ticketNo: int('ticketNo').references(()=>ticket.ticketNo),
-    checkInDateTime:  datetime('checkInDateTime', { mode: 'date', fsp: 6 }),
+    ticketNo: int('ticketNo').references(() => ticket.ticketNo),
+    checkInDateTime: datetime('checkInDateTime', { mode: 'date', fsp: 6 }),
     seatNumber: varchar('seatNumber', { length: 255 }).notNull(),
     gate: int('gate').notNull(),
     boardingSequence: int('boardingSequence').notNull(),

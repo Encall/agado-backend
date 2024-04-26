@@ -23,16 +23,15 @@ const mysql = require('mysql2/promise');
 // const user = db.select().from('userAccount');
 // console.log(user);
 
-
 // parse application/json
 app.use(bodyParser.json());
 
 //parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use(cookieParser()); 
+app.use(cookieParser());
 
-app.use(cors({ origin: 'http://localhost:5173', credentials: true}));
+app.use(cors({ origin: 'http://localhost:5173', credentials: true }));
 
 app.use(passport.initialize());
 

@@ -7,7 +7,7 @@ const airport = mysqlTable('airport', {
     country: varchar('country', { length: 255 }).notNull(),
     address: varchar('address', { length: 255 }).notNull(),
     IATACode: varchar('IATACode', { length: 255 }).notNull(),
-    ICAOCode: varchar('ICAOCode', { length: 255 }).notNull()
+    ICAOCode: varchar('ICAOCode', { length: 255 }).notNull(),
 });
 
 module.exports = airport;

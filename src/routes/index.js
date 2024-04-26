@@ -12,9 +12,10 @@ router.get('/airports', async (req, res) => {
         res.json(airports);
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: 'An error occurred while fetching airports' });
+        res.status(500).json({
+            message: 'An error occurred while fetching airports',
+        });
     }
 });
-
 
 module.exports = router;

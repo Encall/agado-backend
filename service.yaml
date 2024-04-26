@@ -1,14 +1,14 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: load-balancer
-  labels:
-    app: express-app
+    name: load-balancer
+    labels:
+        app: express-app
 spec:
-  type: LoadBalancer
-  ports:
-    - port: 80
-      targetPort: 3000
-      nodePort: 31000
-  selector:
-    app: express-app
+    type: LoadBalancer
+    ports:
+        - port: 80
+          targetPort: 3000
+          nodePort: 31000
+    selector:
+        app: express-app
