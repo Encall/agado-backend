@@ -1,4 +1,4 @@
-const { int, mysqlTable, serial, varchar } = require('drizzle-orm/mysql-core');
+const { int, mysqlTable, varchar } = require('drizzle-orm/mysql-core');
 
 const airline = mysqlTable('airline', {
     airlineID: int('airlineID').primaryKey().autoincrement(),

@@ -1,5 +1,6 @@
-const { float,int, mysqlTable,date,datetime, serial, varchar } = require('drizzle-orm/mysql-core');
+const { float,int, mysqlTable,datetime, varchar } = require('drizzle-orm/mysql-core');
 const booking = require('./booking');
+
 const payment = mysqlTable( "payment",{
     paymentID: int('paymentID').primaryKey().autoincrement(),
     bookingID: int('bookingID').references(()=>booking.bookingID),

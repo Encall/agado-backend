@@ -1,4 +1,4 @@
-const { int, mysqlTable, serial, varchar } = require('drizzle-orm/mysql-core');
+const { int, mysqlTable, varchar } = require('drizzle-orm/mysql-core');
 const airline = require('./airline');
 
 const department = mysqlTable("department", {
