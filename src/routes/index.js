@@ -1,29 +1,20 @@
 const express = require('express');
 const router = express.Router();
-const passport = require('passport');
 const db = require('../configs/db');
 const authRoute = require('./auth.route');
-const schema = require('../drizzle/schema/airport');
-
-const airportSchema = schema.airport;
+const schema = require('../drizzle/schema');
 
 router.use('/', authRoute);
 
-router.get(
-    '/protected',
-    passport.authenticate('jwt', { session: false }),
-    (req, res) => {
-        res.json({ message: 'Protected route' });
-    }
-);
-
-router.get(
-    '/airports',
-    passport.authenticate('jwt', { session: false }),
-    async (req, res) => {
-        const airports = await db.select().from(airportSchema);
+router.get('/airports', async (req, res) => {
+    try {
+        const airports = await db.select().from(schema.airport);
         res.json(airports);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'An error occurred while fetching airports' });
     }
-);
+});
+
 
 module.exports = router;
