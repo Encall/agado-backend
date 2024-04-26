@@ -13,4 +13,4 @@ const cookieConfig = {
     }
 };
 
-module.exports = cookieConfig;
+export default cookieConfig;

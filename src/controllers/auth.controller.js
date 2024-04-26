@@ -1,16 +1,19 @@
-require('dotenv').config();
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-const db = require('../configs/db');
-const schema = require('../drizzle/schema/userAccount');
-const opts = require('../configs/cookie-config');
-const { sql, eq } = require('drizzle-orm');
+import dotenv from 'dotenv';
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import db from '../configs/db.js';
+import schema from '../drizzle/schema/userAccount.js';
+import opts from '../configs/cookie-config.js';
+import { sql, eq } from 'drizzle-orm';
+
+dotenv.config();
+
 const jwtsecretkey = process.env.JWT_ACCESS_SECRET_KEY;
 const jwtexpiration = process.env.JWT_ACCESS_EXPIRATION;
 
 const userAccount = schema.userAccount;
 
-exports.login = async (req, res) => {
+export const login = async (req, res) => {
     try {
         const [user] = await db
             .select()
@@ -61,7 +64,7 @@ exports.login = async (req, res) => {
     }
 };
 
-exports.signup = async (req, res) => {
+export const signup = async (req, res) => {
     const { email, password, firstName, lastName, phoneNumber } = req.body;
     // Check if email and password are provided
     if (!email || !password) {
@@ -132,7 +135,7 @@ exports.signup = async (req, res) => {
     }
 };
 
-exports.jwtRefreshTokenValidate = (req, res, next) => {
+export const jwtRefreshTokenValidate = (req, res, next) => {
     try {
         const refreshToken = req.cookies.refreshToken;
         if (!refreshToken) {
@@ -152,7 +155,7 @@ exports.jwtRefreshTokenValidate = (req, res, next) => {
     }
 };
 
-exports.refresh = async (req, res) => {
+export const refresh = async (req, res) => {
     db.select()
         .from(userAccount)
         .where(eq(userAccount.userID, req.user.id))

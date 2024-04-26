@@ -1,13 +1,12 @@
-const express = require('express');
-const router = express.Router();
-const passport = require('passport');
-const db = require('../configs/db');
-const authRoute = require('./auth.route');
-const schema = require('../drizzle/schema/airport');
+import { Router } from 'express';
+import passport from 'passport';
+import db from '../configs/db.js';
+import authRouter from './auth.route.js';
+import * as schema from '../drizzle/schema';
 
-const airportSchema = schema.airport;
+const router = Router();
 
-router.use('/', authRoute);
+router.use('/', authRouter);
 
 router.get(
     '/protected',
@@ -21,9 +20,9 @@ router.get(
     '/airports',
     passport.authenticate('jwt', { session: false }),
     async (req, res) => {
-        const airports = await db.select().from(airportSchema);
+        const airports = await db.select().from(schema.airports);
         res.json(airports);
     }
 );
 
-module.exports = router;
+export default indexRouter = router;

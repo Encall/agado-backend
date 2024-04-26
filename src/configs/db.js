@@ -1,5 +1,5 @@
-const {drizzle} = require('drizzle-orm/mysql2');
-const mysql = require('mysql2/promise');
+import { drizzle } from 'drizzle-orm/mysql2';
+import mysql from 'mysql2/promise';
 
 const connection = mysql.createPool({
   host: process.env.DB_HOST,
@@ -9,6 +9,6 @@ const connection = mysql.createPool({
   multipleStatements: true,
 });
 
-const db = drizzle(connection, { mode: 'default'});
+const db = drizzle(connection, { mode: 'default' });
 
-module.exports = db;
+export default db;

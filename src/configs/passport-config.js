@@ -1,7 +1,9 @@
-const JwtStrategy = require('passport-jwt').Strategy;
-require('dotenv').config();
+import { Strategy as JwtStrategy } from 'passport-jwt';
+import dotenv from 'dotenv';
 
-module.exports = (passport) => {
+dotenv.config();
+
+export default (passport) => {
     passport.use(
         new JwtStrategy(
             {
