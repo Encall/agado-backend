@@ -15,6 +15,13 @@
       "when": 1714217561589,
       "tag": "0001_sloppy_red_skull",
       "breakpoints": false
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1714325226232,
+      "tag": "0002_romantic_crusher_hogan",
+      "breakpoints": false
     }
   ]
 }

@@ -54,7 +54,8 @@ exports.login = async (req, res) => {
         return res
             .status(200)
             .json({
-                message: 'Login successful.',
+                userid: user.userID,
+                email: user.email,
             })
             .send();
     } catch (error) {
@@ -123,7 +124,8 @@ exports.signup = async (req, res) => {
         res.cookie('refreshToken', refreshToken, opts.refreshOptions);
         res.status(200)
             .json({
-                message: 'Signup successful.',
+                user: uuid,
+                email: email,
             })
             .send();
     } catch (error) {
