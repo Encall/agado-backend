@@ -2,9 +2,11 @@ const express = require('express');
 const router = express.Router();
 const db = require('../configs/db');
 const authRoute = require('./auth.route');
+const dashboardRoute = require('./dashboard.route');
 const schema = require('../drizzle/schema');
 
 router.use('/', authRoute);
+router.use('/dashboard', dashboardRoute);
 
 router.get('/airports', async (req, res) => {
     try {
