@@ -17,7 +17,7 @@ const employee = mysqlTable('employee', {
     departmentID: int('departmentID').references(() => department.departmentID),
     position: varchar('position', { length: 255 }).notNull(),
     salary: float('salary').notNull(),
-    permissionLevel: int('permissionLevel').notNull().default(1),
+    permissionLevel: int('permissionLevel').notNull().default(0),
     startDate: date('startDate').notNull(),
     endDate: date('endDate'),
 });
