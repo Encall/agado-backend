@@ -37,11 +37,18 @@ exports.login = async (req, res) => {
             });
         }
 
-        const accessToken = jwt.sign({ id: user.userID }, jwtsecretkey, {
-            expiresIn: jwtexpiration,
-        });
+        // Set user role to 0 (default) (0 = user)
+        const role = 0;
+
+        const accessToken = jwt.sign(
+            { id: user.userID, role: role },
+            jwtsecretkey,
+            {
+                expiresIn: jwtexpiration,
+            }
+        );
         const refreshToken = jwt.sign(
-            { id: user.userID },
+            { id: user.userID, role: role },
             process.env.JWT_REFRESH_SECRET_KEY,
             {
                 expiresIn: process.env.JWT_REFRESH_EXPIRATION,
@@ -56,6 +63,8 @@ exports.login = async (req, res) => {
             .json({
                 userid: user.userID,
                 email: user.email,
+                firstName: user.firstName,
+                role: role,
             })
             .send();
     } catch (error) {
@@ -107,12 +116,15 @@ exports.signup = async (req, res) => {
 
         console.log('User: %s Email: %s created successfully.', uuid, email);
 
+        // Set user role to 0 (default) (0 = user)
+        const role = 0;
+
         // Create a JWT
-        const accessToken = jwt.sign({ id: uuid }, jwtsecretkey, {
+        const accessToken = jwt.sign({ id: uuid, role: role }, jwtsecretkey, {
             expiresIn: jwtexpiration,
         });
         const refreshToken = jwt.sign(
-            { id: uuid },
+            { id: uuid, role: role },
             process.env.JWT_REFRESH_SECRET_KEY,
             {
                 expiresIn: process.env.JWT_REFRESH_EXPIRATION,
@@ -126,6 +138,8 @@ exports.signup = async (req, res) => {
             .json({
                 user: uuid,
                 email: email,
+                firstName: firstName,
+                role: role,
             })
             .send();
     } catch (error) {
@@ -164,13 +178,15 @@ exports.refresh = async (req, res) => {
                 return res.status(404).json({ error: 'User not found' });
             }
 
+            const role = 0;
+
             const accessToken = jwt.sign(
-                { id: user.userID },
+                { id: user.userID, role: role },
                 process.env.JWT_ACCESS_SECRET_KEY,
                 { expiresIn: process.env.JWT_ACCESS_EXPIRATION }
             );
             const refreshToken = jwt.sign(
-                { id: user.userID },
+                { id: user.userID, role: role },
                 process.env.JWT_REFRESH_SECRET_KEY,
                 { expiresIn: process.env.JWT_REFRESH_EXPIRATION }
             );
