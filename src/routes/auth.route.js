@@ -18,4 +18,12 @@ router.get(
     }
 );
 
+router.get(
+    '/user/status',
+    passport.authenticate('jwt', { session: false }),
+    (req, res) => {
+        res.status(200).send();
+    }
+);
+
 module.exports = router;
