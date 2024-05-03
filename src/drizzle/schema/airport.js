@@ -1,4 +1,4 @@
-const { int, mysqlTable, varchar , decimal } = require('drizzle-orm/mysql-core');
+const { int, mysqlTable, varchar , decimal, float } = require('drizzle-orm/mysql-core');
 
 const airport = mysqlTable('airport', {
     airportID: int('airportID').primaryKey().autoincrement(),
@@ -10,6 +10,7 @@ const airport = mysqlTable('airport', {
     longitude: decimal('longitude', { precision: 11, scale: 8 }).notNull(),
     IATACode: varchar('IATACode', { length: 255 }).notNull(),
     ICAOCode: varchar('ICAOCode', { length: 255 }).notNull(),
+    airportTax: float('airportTax').notNull().default(1500),
 });
 
 module.exports = airport;

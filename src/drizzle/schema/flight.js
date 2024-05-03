@@ -21,6 +21,7 @@ const flight = mysqlTable('flight', {
     flightNo: varchar('flightNo', { length: 255 }).notNull(),
     currentCapacity: int('currentCapacity').notNull(),
     status: varchar('status', { length: 255 }).notNull(),
+    baseFare: int('baseFare').notNull(),
 });
 
 module.exports = flight;
