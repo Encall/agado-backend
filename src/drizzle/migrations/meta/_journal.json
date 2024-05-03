@@ -43,6 +43,13 @@
       "when": 1714746597946,
       "tag": "0005_simple_joseph",
       "breakpoints": false
+    },
+    {
+      "idx": 6,
+      "version": "5",
+      "when": 1714748755854,
+      "tag": "0006_thin_mariko_yashida",
+      "breakpoints": false
     }
   ]
 }

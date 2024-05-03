@@ -1,0 +1,1 @@
+ALTER TABLE `aircraft` RENAME COLUMN `aircraftType` TO `aircraftCallSign`;
