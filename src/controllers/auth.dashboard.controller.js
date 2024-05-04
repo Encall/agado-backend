@@ -107,7 +107,7 @@ exports.signup = async (req, res) => {
             .where(eq(schema.employee.email, req.body.email));
         if (employee) {
             console.log('Email already exists');
-            return res.status(400).json({ message: 'Email already exists.' });
+            return res.status(409).json({ message: 'Email already exists.' });
         }
 
         // Hash the password
