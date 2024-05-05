@@ -14,7 +14,11 @@ module.exports = (passport) => {
                     return done('jwt expired');
                 }
 
-                return done(null, jwtPayload);
+                const user = {
+                    userid: jwtPayload.id,
+                    role: jwtPayload.role,
+                };
+                return done(null, user);
             }
         )
     );
