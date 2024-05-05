@@ -12,7 +12,7 @@ WORKDIR /app
 COPY package*.json pnpm-lock.yaml ./
 
 # Installing pnpm and dependencies
-RUN npm install -g pnpm && pnpm install --prod
+RUN npm install -g pnpm && pnpm install
 
 # Copy all other files in our project
 COPY . .

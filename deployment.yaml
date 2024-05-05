@@ -1,20 +1,20 @@
 kind: Deployment
 apiVersion: apps/v1
 metadata:
-    name: express-app
+    name: adago-backend
+    namespace: adago
 spec:
     replicas: 3
     selector:
         matchLabels:
-            app: express-app
+            app: adago-backend
     template:
         metadata:
             labels:
-                app: express-app
+                app: adago-backend
         spec:
             containers:
-                - name: express-app
-                  image: 'encall/cpe241-express:latest'
+                - name: adago-backend
+                  image: 'encalls/adago-backend:latest'
                   ports:
-                      - containerPort: 80
-                  imagePullPolicy: Never
+                      - containerPort: 3000

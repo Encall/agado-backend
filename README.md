@@ -1,7 +1,9 @@
-docker build -t encall/cpe241-express .
-docker run --name cpe241-backend -p 3000:3000 encall/cpe241-express
+docker build -t encalls/adago-backend .
+docker run --name adago-backend -p 3000:3000 encalls/adago-backend
+docker push encalls/adago-backend
 
 kubectl apply -f deployment.yaml
 kubectl apply -f service.yaml
 kubectl get pod
 kubectl get service
+kubectl -n adago describe certificate letsencrypt-prod
