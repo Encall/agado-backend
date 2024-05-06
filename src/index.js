@@ -16,7 +16,22 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(cookieParser());
 
-app.use(cors({ origin: 'http://localhost:5173', credentials: true }));
+app.use(
+    cors({
+        allowedHeaders: [
+            'Origin',
+            'X-Requested-With',
+            'Content-Type',
+            'Accept',
+            'X-Access-Token',
+            'Access-Control-Allow-Methods',
+        ],
+        credentials: true,
+        methods: 'GET,HEAD,OPTIONS,PUT,PATCH,POST,DELETE',
+        origin: 'http://localhost:5173',
+        preflightContinue: false,
+    })
+);
 
 app.use(passport.initialize());
 

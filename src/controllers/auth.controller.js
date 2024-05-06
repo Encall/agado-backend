@@ -206,3 +206,10 @@ exports.refresh = async (req, res) => {
             return res.status(500).json({ error: 'Internal server error' });
         });
 };
+
+exports.logout = (req, res) => {
+    res.clearCookie('accessToken', opts.options);
+    res.clearCookie('refreshToken', opts.refreshOptions);
+    console.log('User logged out successfully.')
+    return res.status(200).json({ message: 'Logged out successfully' });
+};
