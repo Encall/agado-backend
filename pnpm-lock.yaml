@@ -44,6 +44,9 @@ importers:
       uuid:
         specifier: ^9.0.1
         version: 9.0.1
+      zod:
+        specifier: ^3.23.8
+        version: 3.23.8
     devDependencies:
       drizzle-kit:
         specifier: ^0.20.17
@@ -1255,8 +1258,8 @@ packages:
   yallist@4.0.0:
     resolution: {integrity: sha512-3wdGidZyq5PB084XLES5TpOSRA3wjXAlIWMhum2kRcv/41Sn2emQ0dycQW4uZXLejwKvg6EsvbdlVL+FYEct7A==}
 
-  zod@3.23.4:
-    resolution: {integrity: sha512-/AtWOKbBgjzEYYQRNfoGKHObgfAZag6qUJX1VbHo2PRBgS+wfWagEY2mizjfyAPcGesrJOcx/wcl0L9WnVrHFw==}
+  zod@3.23.8:
+    resolution: {integrity: sha512-XBx9AXhXktjUqnepgTiE5flcKIYWi/rme0Eaj+5Y0lftuGBq+jyRu/md4WnuxqgP1ubdpNCsYEYPxrzVHD8d6g==}
 
 snapshots:
 
@@ -1407,10 +1410,10 @@ snapshots:
 
   '@hono/node-server@1.11.0': {}
 
-  '@hono/zod-validator@0.2.1(hono@4.2.7)(zod@3.23.4)':
+  '@hono/zod-validator@0.2.1(hono@4.2.7)(zod@3.23.8)':
     dependencies:
       hono: 4.2.7
-      zod: 3.23.4
+      zod: 3.23.8
 
   '@mapbox/node-pre-gyp@1.0.11':
     dependencies:
@@ -1620,7 +1623,7 @@ snapshots:
     dependencies:
       '@esbuild-kit/esm-loader': 2.6.5
       '@hono/node-server': 1.11.0
-      '@hono/zod-validator': 0.2.1(hono@4.2.7)(zod@3.23.4)
+      '@hono/zod-validator': 0.2.1(hono@4.2.7)(zod@3.23.8)
       camelcase: 7.0.1
       chalk: 5.3.0
       commander: 9.5.0
@@ -1634,7 +1637,7 @@ snapshots:
       minimatch: 7.4.6
       semver: 7.6.0
       superjson: 2.2.1
-      zod: 3.23.4
+      zod: 3.23.8
     transitivePeerDependencies:
       - supports-color
 
@@ -2373,4 +2376,4 @@ snapshots:
 
   yallist@4.0.0: {}
 
-  zod@3.23.4: {}
+  zod@3.23.8: {}
