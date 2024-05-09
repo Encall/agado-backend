@@ -2,24 +2,42 @@ require('dotenv').config();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const db = require('../configs/db');
-const schema = require('../drizzle/schema');
 const opts = require('../configs/cookie-config');
-const { sql, eq } = require('drizzle-orm');
 const jwtsecretkey = process.env.JWT_ACCESS_SECRET_KEY;
 const jwtexpiration = process.env.JWT_ACCESS_EXPIRATION;
 const { v4: uuidv4 } = require('uuid');
 
+const createTokens = (user, role) => {
+    const accessToken = jwt.sign(
+        { id: user.userID, role: role },
+        jwtsecretkey,
+        {
+            expiresIn: jwtexpiration,
+        }
+    );
+    const refreshToken = jwt.sign(
+        { id: user.userID, role: role },
+        process.env.JWT_REFRESH_SECRET_KEY,
+        {
+            expiresIn: process.env.JWT_REFRESH_EXPIRATION,
+        }
+    );
+
+    return { accessToken, refreshToken };
+};
+
 exports.login = async (req, res) => {
     try {
-        const [user] = await db
-            .select()
-            .from(schema.userAccount)
-            .where(eq(schema.userAccount.email, req.body.email));
+        const query =
+            'SELECT userID, email, password, firstName FROM userAccount WHERE email = ?';
+        const [[user]] = await db.query(query, [req.body.email]);
+
         if (!user || user.length === 0) {
             return res
                 .status(401)
                 .json({ error: 'Incorrect email or password.' });
         }
+
         const isMatch = await new Promise((resolve, reject) => {
             bcrypt.compare(
                 req.body.password,
@@ -40,20 +58,7 @@ exports.login = async (req, res) => {
         // Set user role to 0 (default) (0 = user)
         const role = 0;
 
-        const accessToken = jwt.sign(
-            { id: user.userID, role: role },
-            jwtsecretkey,
-            {
-                expiresIn: jwtexpiration,
-            }
-        );
-        const refreshToken = jwt.sign(
-            { id: user.userID, role: role },
-            process.env.JWT_REFRESH_SECRET_KEY,
-            {
-                expiresIn: process.env.JWT_REFRESH_EXPIRATION,
-            }
-        );
+        const { accessToken, refreshToken } = createTokens(user, role);
 
         res.cookie('accessToken', accessToken, opts.options);
         res.cookie('refreshToken', refreshToken, opts.refreshOptions);
@@ -75,26 +80,15 @@ exports.login = async (req, res) => {
 
 exports.signup = async (req, res) => {
     const { email, password, firstName, lastName, phoneNumber } = req.body;
-    // Check if all fields are provided
-    if (!email || !password || !firstName || !lastName || !phoneNumber) {
-        return res.status(400).json({
-            message:
-                'All fields are required. Please provide email, password, first name, last name, and phone number.',
-        });
-    }
-
     try {
-        // Check if user already exists
-        var [user] = await db
-            .select()
-            .from(schema.userAccount)
-            .where(eq(schema.userAccount.email, req.body.email));
+        let query = 'SELECT userID FROM userAccount WHERE email = ?';
+        const [[user]] = await db.query(query, [req.body.email]);
+
         if (user) {
             console.log('Email already exists');
             return res.status(409).json({ message: 'Email already exists.' });
         }
 
-        // Hash the password
         const hashedPassword = await new Promise((resolve, reject) => {
             bcrypt.hash(password, 10, function (err, hash) {
                 if (err) reject(err);
@@ -102,33 +96,26 @@ exports.signup = async (req, res) => {
             });
         });
 
-        // Generate UUID for user
         const uuid = uuidv4();
 
-        await db.insert(schema.userAccount).values({
-            userID: uuid,
-            email: email,
-            password: hashedPassword,
-            firstName: firstName,
-            lastName: lastName,
-            phoneNumber: phoneNumber,
-        });
+        query = `INSERT INTO userAccount (userID, email, password, firstName, lastName, phoneNumber) VALUES (?, ?, ?, ?, ?, ?)`;
+        await db.query(query, [
+            uuid,
+            email,
+            hashedPassword,
+            firstName,
+            lastName,
+            phoneNumber,
+        ]);
 
         console.log('User: %s Email: %s created successfully.', uuid, email);
 
         // Set user role to 0 (default) (0 = user)
         const role = 0;
 
-        // Create a JWT
-        const accessToken = jwt.sign({ id: uuid, role: role }, jwtsecretkey, {
-            expiresIn: jwtexpiration,
-        });
-        const refreshToken = jwt.sign(
-            { id: uuid, role: role },
-            process.env.JWT_REFRESH_SECRET_KEY,
-            {
-                expiresIn: process.env.JWT_REFRESH_EXPIRATION,
-            }
+        const { accessToken, refreshToken } = createTokens(
+            { userID: uuid },
+            role
         );
 
         console.log('User: %s signed up successfully.', email);
@@ -170,46 +157,36 @@ exports.jwtRefreshTokenValidate = (req, res, next) => {
 };
 
 exports.refresh = async (req, res) => {
-    db.select()
-        .from(schema.userAccount)
-        .where(eq(schema.userAccount.userID, req.user.id))
-        .then(([user]) => {
-            if (!user) {
-                return res.status(404).json({ error: 'User not found' });
-            }
+    try {
+        const query = 'SELECT userID,email FROM userAccount WHERE userID = ?';
+        const [[user]] = await db.query(query, [req.user.id]);
 
-            const role = 0;
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
 
-            const accessToken = jwt.sign(
-                { id: user.userID, role: role },
-                process.env.JWT_ACCESS_SECRET_KEY,
-                { expiresIn: process.env.JWT_ACCESS_EXPIRATION }
-            );
-            const refreshToken = jwt.sign(
-                { id: user.userID, role: role },
-                process.env.JWT_REFRESH_SECRET_KEY,
-                { expiresIn: process.env.JWT_REFRESH_EXPIRATION }
-            );
+        const role = 0;
 
-            console.log('User: %s has refresh access token.', user.email);
-            res.cookie('accessToken', accessToken, opts.options);
-            res.cookie('refreshToken', refreshToken, opts.refreshOptions);
-            return res
-                .status(200)
-                .json({
-                    message: 'Token refresh successful.',
-                })
-                .send();
-        })
-        .catch((err) => {
-            console.error(err);
-            return res.status(500).json({ error: 'Internal server error' });
-        });
+        const { accessToken, refreshToken } = createTokens(user, role);
+
+        console.log('User: %s has refresh access token.', user.email);
+        res.cookie('accessToken', accessToken, opts.options);
+        res.cookie('refreshToken', refreshToken, opts.refreshOptions);
+        return res
+            .status(200)
+            .json({
+                message: 'Token refresh successful.',
+            })
+            .send();
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ error: 'Internal server error' });
+    }
 };
 
 exports.logout = (req, res) => {
     res.clearCookie('accessToken', opts.options);
     res.clearCookie('refreshToken', opts.refreshOptions);
-    console.log('User logged out successfully.')
+    console.log('User logged out successfully.');
     return res.status(200).json({ message: 'Logged out successfully' });
 };
