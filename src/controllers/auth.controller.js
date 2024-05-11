@@ -83,6 +83,8 @@ exports.signup = async (req, res) => {
     try {
         let query = 'SELECT userID FROM userAccount WHERE email = ?';
         const [[user]] = await db.query(query, [req.body.email]);
+        
+        
 
         if (user) {
             console.log('Email already exists');

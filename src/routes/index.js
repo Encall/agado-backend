@@ -6,6 +6,7 @@ const dashboardRoute = require('./dashboard.route');
 const searchRoute = require('./search.route');
 const healthcheckRoute = require('./healthcheck.route');
 const profileRoute = require('./profile.route');
+const flightRoute = require('./flight.route');
 const schema = require('../drizzle/schema');
 
 router.use('/', authRoute);
@@ -13,5 +14,6 @@ router.use('/health', healthcheckRoute);
 router.use('/dashboard', dashboardRoute);
 router.use('/search', searchRoute);
 router.use('/profile', profileRoute);
+router.use('/flight', flightRoute);
 
 module.exports = router;
