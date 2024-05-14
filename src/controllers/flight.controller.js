@@ -60,3 +60,85 @@ exports.getFlightById = async (req, res) => {
         });
     }
 };
+
+exports.getAllFlights = async (req, res) => {
+    try {
+        const query = `
+            SELECT 
+                flight.flightNo, 
+                airline.airlineName,
+                departureAirport.city AS departureCity, 
+                arrivalAirport.city AS arrivalCity,
+                departureAirport.IATACode AS departureIATACode,
+                arrivalAirport.IATACode AS arrivalIATACode,
+                flight.departureDateTime, 
+                flight.arrivalDateTime
+            FROM 
+                flight
+            JOIN 
+                airport AS departureAirport ON flight.departureAirportID = departureAirport.airportID
+            JOIN 
+                airport AS arrivalAirport ON flight.arrivalAirportID = arrivalAirport.airportID
+            JOIN
+                aircraft ON flight.aircraftID = aircraft.aircraftID
+            JOIN 
+                airline ON aircraft.airlineID = airline.airlineID
+            `;
+        const [flights] = await db.query(query);
+        res.status(200).json(flights);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            message: 'An error occurred while getting all flights',
+        });
+    }
+}
+
+exports.createFlight = async (req, res) => {
+    const { flightNo, currentCapacity, baseFare, departureDateTime, arrivalDateTime, aircraftID } = req.body;
+    try {
+        const query = `
+            INSERT INTO 
+                flight (flightNo, currentCapacity, baseFare, departureDateTime, arrivalDateTime, aircraftID)
+            VALUES 
+                (?, ?, ?, ?, ?, ?)
+        `;
+        await db.query(query, [flightNo, currentCapacity, baseFare, departureDateTime, arrivalDateTime, aircraftID]);
+        res.status(200).json({
+            message: 'Flight created successfully',
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            message: 'An error occurred while creating a flight',
+        });
+    }
+}
+
+exports.updateFlight = async (req, res) => {
+    const { flightID, flightNo, currentCapacity, baseFare, departureDateTime, arrivalDateTime, aircraftID } = req.body;
+    try {
+        const query = `
+            UPDATE 
+                flight
+            SET 
+                flightNo = ?,
+                currentCapacity = ?,
+                baseFare = ?,
+                departureDateTime = ?,
+                arrivalDateTime = ?,
+                aircraftID = ?
+            WHERE 
+                flightID = ?
+        `;
+        await db.query(query, [flightNo, currentCapacity, baseFare, departureDateTime, arrivalDateTime, aircraftID, flightID]);
+        res.status(200).json({
+            message: 'Flight updated successfully',
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            message: 'An error occurred while updating a flight',
+        });
+    }
+}
