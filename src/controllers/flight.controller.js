@@ -5,6 +5,7 @@ exports.getFlightById = async (req, res) => {
     try {
         const query = `
             SELECT
+                flight.flightID,
                 flight.flightNo,
                 flight.currentCapacity,
                 flight.baseFare,
@@ -37,6 +38,7 @@ exports.getFlightById = async (req, res) => {
             const flightData = {
                 airlineIcon: 'https://upload.wikimedia.org/wikipedia/en/thumb/3/3b/Hawaiian_Airlines_logo_2017.svg/800px-Hawaiian_Airlines_logo_2017.svg.png',
                 airlineName: flight.airlineName,
+                flightID: flight.flightID,
                 flightNo: flight.flightNo,
                 departureTime: flight.departureDateTime.toLocaleTimeString('en-US', {
                     hour: 'numeric',

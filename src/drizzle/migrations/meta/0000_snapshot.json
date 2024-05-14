@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "f7d4020f-cf0b-485b-8601-e63ce3343a47",
+  "id": "9e1341a1-52e2-4103-90b7-8913aedc5ba1",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "aircraft": {
@@ -21,8 +21,8 @@
           "notNull": false,
           "autoincrement": false
         },
-        "aircraftType": {
-          "name": "aircraftType",
+        "aircraftCallSign": {
+          "name": "aircraftCallSign",
           "type": "varchar(255)",
           "primaryKey": false,
           "notNull": true,
@@ -62,7 +62,7 @@
           "columnsTo": [
             "airlineID"
           ],
-          "onDelete": "no action",
+          "onDelete": "SET NULL",
           "onUpdate": "no action"
         }
       },
@@ -137,6 +137,20 @@
           "notNull": true,
           "autoincrement": false
         },
+        "continent": {
+          "name": "continent",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "countryCode": {
+          "name": "countryCode",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
         "city": {
           "name": "city",
           "type": "varchar(255)",
@@ -144,16 +158,16 @@
           "notNull": true,
           "autoincrement": false
         },
-        "country": {
-          "name": "country",
-          "type": "varchar(255)",
+        "latitude": {
+          "name": "latitude",
+          "type": "decimal(10,8)",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
-        "address": {
-          "name": "address",
-          "type": "varchar(255)",
+        "longitude": {
+          "name": "longitude",
+          "type": "decimal(11,8)",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -171,6 +185,14 @@
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
+        },
+        "airportTax": {
+          "name": "airportTax",
+          "type": "float",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 1500
         }
       },
       "indexes": {},
@@ -195,13 +217,6 @@
           "notNull": true,
           "autoincrement": false
         },
-        "passengerID": {
-          "name": "passengerID",
-          "type": "varchar(36)",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
         "flightID": {
           "name": "flightID",
           "type": "int",
@@ -218,7 +233,7 @@
         },
         "bookingDateTime": {
           "name": "bookingDateTime",
-          "type": "datetime(6)",
+          "type": "datetime",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -226,19 +241,6 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "booking_passengerID_passenger_passengerID_fk": {
-          "name": "booking_passengerID_passenger_passengerID_fk",
-          "tableFrom": "booking",
-          "tableTo": "passenger",
-          "columnsFrom": [
-            "passengerID"
-          ],
-          "columnsTo": [
-            "passengerID"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
         "booking_flightID_flight_flightID_fk": {
           "name": "booking_flightID_flight_flightID_fk",
           "tableFrom": "booking",
@@ -249,7 +251,7 @@
           "columnsTo": [
             "flightID"
           ],
-          "onDelete": "no action",
+          "onDelete": "cascade",
           "onUpdate": "no action"
         },
         "booking_userID_userAccount_userID_fk": {
@@ -288,7 +290,7 @@
         },
         "ticketNo": {
           "name": "ticketNo",
-          "type": "int",
+          "type": "varchar(36)",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -458,6 +460,14 @@
           "notNull": true,
           "autoincrement": false
         },
+        "permissionLevel": {
+          "name": "permissionLevel",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
+        },
         "startDate": {
           "name": "startDate",
           "type": "date",
@@ -604,7 +614,7 @@
         },
         "ticketNo": {
           "name": "ticketNo",
-          "type": "int",
+          "type": "varchar(36)",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -643,7 +653,7 @@
           "columnsTo": [
             "ticketNo"
           ],
-          "onDelete": "no action",
+          "onDelete": "CASCADE",
           "onUpdate": "no action"
         }
       },
@@ -722,6 +732,13 @@
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
+        },
+        "baseFare": {
+          "name": "baseFare",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
         }
       },
       "indexes": {},
@@ -736,7 +753,7 @@
           "columnsTo": [
             "aircraftID"
           ],
-          "onDelete": "no action",
+          "onDelete": "SET NULL",
           "onUpdate": "no action"
         },
         "flight_departureAirportID_airport_airportID_fk": {
@@ -749,7 +766,7 @@
           "columnsTo": [
             "airportID"
           ],
-          "onDelete": "no action",
+          "onDelete": "SET NULL",
           "onUpdate": "no action"
         },
         "flight_arrivalAirportID_airport_airportID_fk": {
@@ -762,7 +779,7 @@
           "columnsTo": [
             "airportID"
           ],
-          "onDelete": "no action",
+          "onDelete": "SET NULL",
           "onUpdate": "no action"
         }
       },
@@ -793,6 +810,13 @@
           "notNull": true,
           "autoincrement": false
         },
+        "middleName": {
+          "name": "middleName",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
         "lastName": {
           "name": "lastName",
           "type": "varchar(255)",
@@ -813,10 +837,52 @@
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
+        },
+        "dateOfBirth": {
+          "name": "dateOfBirth",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "nationality": {
+          "name": "nationality",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "bookingID": {
+          "name": "bookingID",
+          "type": "varchar(36)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "luggageWeight": {
+          "name": "luggageWeight",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
         }
       },
       "indexes": {},
-      "foreignKeys": {},
+      "foreignKeys": {
+        "passenger_bookingID_booking_bookingID_fk": {
+          "name": "passenger_bookingID_booking_bookingID_fk",
+          "tableFrom": "passenger",
+          "tableTo": "booking",
+          "columnsFrom": [
+            "bookingID"
+          ],
+          "columnsTo": [
+            "bookingID"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
       "compositePrimaryKeys": {
         "passenger_passengerID": {
           "name": "passenger_passengerID",
@@ -860,13 +926,34 @@
         },
         "paymentDateTime": {
           "name": "paymentDateTime",
-          "type": "datetime(6)",
+          "type": "datetime",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
-        "paymentMethod": {
-          "name": "paymentMethod",
+        "cardNumber": {
+          "name": "cardNumber",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "holderName": {
+          "name": "holderName",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "ccv": {
+          "name": "ccv",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "expiryDate": {
+          "name": "expiryDate",
           "type": "varchar(255)",
           "primaryKey": false,
           "notNull": true,
@@ -917,10 +1004,10 @@
       "columns": {
         "ticketNo": {
           "name": "ticketNo",
-          "type": "int",
+          "type": "varchar(36)",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": true
+          "autoincrement": false
         },
         "bookingID": {
           "name": "bookingID",
@@ -970,7 +1057,7 @@
           "columnsTo": [
             "passengerID"
           ],
-          "onDelete": "no action",
+          "onDelete": "CASCADE",
           "onUpdate": "no action"
         }
       },

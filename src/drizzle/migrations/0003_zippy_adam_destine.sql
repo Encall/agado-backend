@@ -1,1 +1,0 @@
-ALTER TABLE `employee` MODIFY COLUMN `permissionLevel` int NOT NULL DEFAULT 0;

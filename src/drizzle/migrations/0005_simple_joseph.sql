@@ -1,1 +1,0 @@
-ALTER TABLE `airport` MODIFY COLUMN `airportTax` float NOT NULL DEFAULT 1500;

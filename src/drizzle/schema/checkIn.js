@@ -8,7 +8,7 @@ const ticket = require('./ticket');
 
 const checkIn = mysqlTable('checkIn', {
     checkInID: int('checkInID').primaryKey().autoincrement(),
-    ticketNo: int('ticketNo').references(() => ticket.ticketNo),
+    ticketNo: varchar('ticketNo', { length: 36 }).references(() => ticket.ticketNo),
     checkInDateTime: datetime('checkInDateTime', { mode: 'date', fsp: 6 }),
     gate: int('gate').notNull(),
     boardingSequence: int('boardingSequence').notNull(),
