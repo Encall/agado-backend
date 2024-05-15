@@ -9,12 +9,20 @@ const airport = require('./airport');
 
 const flight = mysqlTable('flight', {
     flightID: int('flightID').primaryKey().autoincrement(),
-    aircraftID: int('aircraftID').references(() => aircraft.aircraftID),
+    aircraftID: int('aircraftID').references(
+        () => aircraft.aircraftID,
+        { onDelete: 'SET NULL' },
+        { onUpdate: 'CASCADE' }
+    ),
     departureAirportID: int('departureAirportID').references(
-        () => airport.airportID
+        () => airport.airportID,
+        { onDelete: 'SET NULL' },
+        { onUpdate: 'CASCADE' }
     ),
     arrivalAirportID: int('arrivalAirportID').references(
-        () => airport.airportID
+        () => airport.airportID,
+        { onDelete: 'SET NULL' },
+        { onUpdate: 'CASCADE' }
     ),
     arrivalDateTime: datetime('arrivalDateTime', { mode: 'date', fsp: 6 }),
     departureDateTime: datetime('departureDateTime', { mode: 'date', fsp: 6 }),

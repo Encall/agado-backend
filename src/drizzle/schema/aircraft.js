@@ -3,7 +3,7 @@ const airline = require('./airline');
 
 const aircraft = mysqlTable('aircraft', {
     aircraftID: int('aircraftID').primaryKey().autoincrement(),
-    airlineID: int('airlineID').references(() => airline.airlineID),
+    airlineID: int('airlineID').references(() => airline.airlineID, { onDelete: 'SET NULL' }, { onUpdate: 'CASCADE' }),
     aircraftCallSign: varchar('aircraftCallSign', { length: 255 }).notNull(),
     manufacturer: varchar('manufacturer', { length: 255 }).notNull(),
     model: varchar('model', { length: 255 }).notNull(),

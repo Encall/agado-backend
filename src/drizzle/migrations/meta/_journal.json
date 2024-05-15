@@ -5,50 +5,8 @@
     {
       "idx": 0,
       "version": "5",
-      "when": 1714154887515,
-      "tag": "0000_flawless_random",
-      "breakpoints": false
-    },
-    {
-      "idx": 1,
-      "version": "5",
-      "when": 1714217561589,
-      "tag": "0001_sloppy_red_skull",
-      "breakpoints": false
-    },
-    {
-      "idx": 2,
-      "version": "5",
-      "when": 1714325226232,
-      "tag": "0002_romantic_crusher_hogan",
-      "breakpoints": false
-    },
-    {
-      "idx": 3,
-      "version": "5",
-      "when": 1714579257588,
-      "tag": "0003_zippy_adam_destine",
-      "breakpoints": false
-    },
-    {
-      "idx": 4,
-      "version": "5",
-      "when": 1714746565714,
-      "tag": "0004_lonely_deadpool",
-      "breakpoints": false
-    },
-    {
-      "idx": 5,
-      "version": "5",
-      "when": 1714746597946,
-      "tag": "0005_simple_joseph",
-      "breakpoints": false
-    },
-    {
-      "idx": 6,
-      "version": "5",
-      "when": 1714748755854,
-      "tag": "0006_thin_mariko_yashida",
+      "when": 1715710229988,
+      "tag": "0000_curious_bloodstorm",
       "breakpoints": false
     }
   ]

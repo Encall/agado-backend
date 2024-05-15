@@ -1,1 +1,0 @@
-ALTER TABLE `employee` ADD `permissionLevel` int DEFAULT 1 NOT NULL;

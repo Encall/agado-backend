@@ -5,7 +5,7 @@ const db = require('../configs/db');
 const opts = require('../configs/cookie-config');
 const jwtsecretkey = process.env.JWT_ACCESS_SECRET_KEY;
 const jwtexpiration = process.env.JWT_ACCESS_EXPIRATION;
-const { v4: uuidv4 } = require('uuid');
+const { uuidv7 } = require('uuidv7');
 
 const createTokens = (user, role) => {
     const accessToken = jwt.sign(
@@ -83,8 +83,6 @@ exports.signup = async (req, res) => {
     try {
         let query = 'SELECT userID FROM userAccount WHERE email = ?';
         const [[user]] = await db.query(query, [req.body.email]);
-        
-        
 
         if (user) {
             console.log('Email already exists');
@@ -98,7 +96,7 @@ exports.signup = async (req, res) => {
             });
         });
 
-        const uuid = uuidv4();
+        const uuid = uuidv7();
 
         query = `INSERT INTO userAccount (userID, email, password, firstName, lastName, phoneNumber) VALUES (?, ?, ?, ?, ?, ?)`;
         await db.query(query, [
@@ -144,7 +142,7 @@ exports.jwtRefreshTokenValidate = (req, res, next) => {
         const refreshToken = req.cookies.refreshToken;
         if (!refreshToken) {
             console.log('No refresh token provided');
-            return res.sendStatus(403);
+            return res.sendStatus(400);
         }
         const decoded = jwt.verify(
             refreshToken,

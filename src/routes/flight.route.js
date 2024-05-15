@@ -5,6 +5,6 @@ router.get('/:flightID', flightController.getFlightById);
 router.get('/', flightController.getAllFlights);
 
 router.post('/create', flightController.createFlight);
-router.post('/update', flightController.updateFlight);
+router.post('/edit', flightController.editFlight);
 
 module.exports = router;

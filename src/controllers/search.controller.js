@@ -1,6 +1,34 @@
 const db = require('../configs/db');
 
 exports.airports = async (req, res) => {
+    const searchParams = req.query;
+    if(searchParams.all){
+        const queryAll = `
+        SELECT
+            airportID,
+            airportName,
+            city,
+            countryCode AS country,
+            IATACode AS iata
+        FROM
+            airport
+        ORDER BY
+            city ASC
+        `
+        try{
+            const [airports] = await db.query(queryAll);
+            res.status(200).json(airports);
+            return;
+        }
+        catch (error) {
+            console.error('An error occurred while searching for airports:', error);
+            res.status(500).json({
+                message: 'An error occurred while searching for airports',
+            });
+            return;
+        }
+    }
+
     try {
         const searchTerm = req.query.query;
         const query = `
@@ -68,6 +96,28 @@ exports.recommendAirports = async (req, res) => {
 
 exports.searchFlights = async (req, res) => {
     const searchParams = req.query;
+    if(searchParams.refetch){}
+    if(searchParams.all) {
+        const queryAll = `
+        SELECT
+            flightID,
+            flightNo
+        FROM flight
+        ORDER BY flightNo ASC
+        `
+        try{
+            const [flights] = await db.query(queryAll);
+            res.status(200).json(flights);
+            return;
+        }
+        catch (error) {
+            console.error('An error occurred while searching for flights:', error);
+            res.status(500).json({
+                message: 'An error occurred while searching for flights',
+            });
+            return;
+        }
+    }
 
     const { from, to, departDate, adult, child, infant } = searchParams;
 
@@ -131,3 +181,65 @@ exports.searchFlights = async (req, res) => {
         });
     }
 };
+
+exports.getAllAirline = async (req, res) => {
+    try {
+        const query = `
+            SELECT
+                airlineID,
+                airlineName
+            FROM
+                airline
+            ORDER BY
+                airlineName ASC
+        `;
+        const [airlines] = await db.query(query);
+        res.json(airlines);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            message: 'An error occurred while getting airlines',
+        });
+    }
+}
+
+exports.getAllEmployees = async (req, res) => {
+    try {
+        const query = `
+            SELECT 
+                employeeID,
+                firstName,
+                lastName
+            FROM 
+                employee
+        `;
+        const [employees] = await db.query(query);
+        console.log(employees);
+        res.status(200).json(employees);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            message: 'An error occurred while getting all employees',
+        });
+    }
+}
+
+exports.getAllAircrafts = async (req, res) => {
+    try {
+        const query = `
+            SELECT 
+                aircraftID,
+                aircraftCallSign
+            FROM 
+                aircraft
+        `;
+        const [aircrafts] = await db.query(query);
+        res.status(200).json(aircrafts);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            message: 'An error occurred while getting all aircrafts',
+        });
+    }
+}
+
