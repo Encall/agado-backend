@@ -14,4 +14,6 @@ router.post(
     bookingController.createBooking
 );
 
+router.get('/:bookingID', bookingController.getBookingById);
+
 module.exports = router;
