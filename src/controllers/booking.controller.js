@@ -156,3 +156,19 @@ exports.createBooking = async (req, res) => {
         });
     }
 };
+
+// GET /booking/:bookingID
+exports.getBookingById = async (req, res) => {
+    const bookingID = req.params.bookingID;
+    const query = `SELECT * FROM booking WHERE bookingID = ?`;
+    try {
+        const [rows] = await db.query(query, [bookingID]);
+        if (rows.length === 0) {
+            return res.status(404).json({ message: 'Booking not found' });
+        }
+        return res.status(200).json(rows[0]);
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: 'An error occurred' });
+    }
+}

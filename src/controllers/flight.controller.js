@@ -110,13 +110,13 @@ exports.getAllFlights = async (req, res) => {
 
 exports.createFlight = async (req, res) => {
     const { flight, task } = req.body;
+    console.log(task);
     const connection = await db.getConnection();
-
+    console.log(flight);
+    flight.departureDateTime = new Date(flight.departureDateTime).toISOString();
+    flight.arrivalDateTime = new Date(flight.arrivalDateTime).toISOString();
     try {
         await connection.beginTransaction();
-        const departureDateTime = new Date('2024-05-15T20:30');
-        const arrivalDateTime = new Date('2024-05-15T00:30');
-        console.log(flight.aircraftID);
         const queryFlight = `
             INSERT INTO flight (
                 aircraftID,
@@ -130,17 +130,19 @@ exports.createFlight = async (req, res) => {
                 baseFare
             ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
         `;
-        await connection.query(queryFlight, [
+        const [result] = await connection.query(queryFlight, [
             flight.aircraftID,
             flight.departureAirportID,
             flight.arrivalAirportID,
-            arrivalDateTime,
-            departureDateTime,
+            flight.arrivalDateTime,
+            flight.departureDateTime,
             flight.flightNo,
             flight.currentCapacity,
             flight.status,
             flight.baseFare,
         ]);
+
+        const newFlightId = result.insertId;
 
         const queryTask = `
             INSERT INTO employeeTask (
@@ -152,29 +154,64 @@ exports.createFlight = async (req, res) => {
                 flightID
             ) VALUES (?, ?, ?, ?, ?, ?)
         `;
-        await Promise.all(task.map(t => {
-            return connection.query(queryTask, [
-                t.employeeID,
-                t.assignDateTime,
-                t.taskType,
-                t.taskDescription,
-                t.status,
-                t.flightID
-            ]);
-        }));
+        const currentTime = new Date().toISOString().slice(0, 16);
+        await Promise.all(
+            task.map((t) => {
+                return connection.query(queryTask, [
+                    t.employeeID,
+                    currentTime,
+                    t.taskType,
+                    t.taskDescription,
+                    t.status,
+                    t.flightID,
+                ]);
+            })
+        );
+
+        const [newFlight] = await connection.query(
+            `
+        SELECT 
+        flight.flightID,
+        flight.flightNo, 
+        airline.airlineName,
+        departureAirport.city AS departureCity, 
+        arrivalAirport.city AS arrivalCity,
+        departureAirport.IATACode AS departureIATACode,
+        arrivalAirport.IATACode AS arrivalIATACode,
+        flight.departureDateTime, 
+        flight.arrivalDateTime,
+        flight.currentCapacity,
+        flight.baseFare,
+        flight.status
+    FROM 
+        flight
+    JOIN 
+        airport AS departureAirport ON flight.departureAirportID = departureAirport.airportID
+    JOIN 
+        airport AS arrivalAirport ON flight.arrivalAirportID = arrivalAirport.airportID
+    JOIN
+        aircraft ON flight.aircraftID = aircraft.aircraftID
+    JOIN 
+        airline ON aircraft.airlineID = airline.airlineID
+    WHERE flight.flightID = ?
+        `,
+            [newFlightId]
+        );
 
         await connection.commit();
         console.log('create flight success');
-        res.status(200).json({
-            message: 'Flight created and employee task assigned successfully',
-        });
+        res.status(200).json({newFlight});
+        // res.status(200).json({
+        //     message: 'Flight created and employee task assigned successfully',
+        // });
     } catch (error) {
         if (connection) {
             await connection.rollback();
         }
         console.error(error);
         res.status(500).json({
-            message: 'An error occurred while creating flight and assigning employee task',
+            message:
+                'An error occurred while creating flight and assigning employee task',
         });
     } finally {
         if (connection) {

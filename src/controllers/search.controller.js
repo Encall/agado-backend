@@ -9,6 +9,8 @@ exports.airports = async (req, res) => {
             airportName,
             city,
             countryCode AS country,
+            latitude AS lat,
+            longitude AS lon,
             IATACode AS iata
         FROM
             airport
@@ -96,13 +98,13 @@ exports.recommendAirports = async (req, res) => {
 
 exports.searchFlights = async (req, res) => {
     const searchParams = req.query;
-    if(searchParams.refetch){}
     if(searchParams.all) {
         const queryAll = `
         SELECT
             flightID,
             flightNo
         FROM flight
+        GROUP BY flightNo
         ORDER BY flightNo ASC
         `
         try{
