@@ -7,10 +7,6 @@ const bookingController = require('../controllers/booking.controller');
 router.post(
     '/create',
     passport.authenticate('jwt', { session: false }),
-    (req, res, next) => {
-        req.user.id = req.user.id; // or whatever property your user id is stored in
-        next();
-    },
     bookingController.createBooking
 );
 

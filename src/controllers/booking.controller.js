@@ -19,7 +19,7 @@ exports.createBooking = async (req, res) => {
     const bookingData = [
         bookingUUID,
         flight.flightID,
-        req.user.id,
+        req.user.userid,
         new Date().toISOString().slice(0, 19).replace('T', ' '),
     ];
 
@@ -42,7 +42,7 @@ exports.createBooking = async (req, res) => {
     const paymentData = [
         uuidv7(),
         bookingUUID,
-        req.user.id,
+        req.user.userid,
         payment.holderName,
         payment.cardNumber,
         payment.ccv,
