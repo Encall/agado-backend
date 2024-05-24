@@ -146,7 +146,10 @@ exports.createBooking = async (req, res) => {
         await connection.commit();
         return res
             .status(200)
-            .json({ message: 'Booking created successfully.' });
+            .json({
+                message: 'Booking created successfully.',
+                bookingID: bookingUUID,
+            });
     } catch (error) {
         await connection.rollback();
         await connection.release();
@@ -160,15 +163,35 @@ exports.createBooking = async (req, res) => {
 // GET /booking/:bookingID
 exports.getBookingById = async (req, res) => {
     const bookingID = req.params.bookingID;
-    const query = `SELECT * FROM booking WHERE bookingID = ?`;
+    console.log('Booking ID:', bookingID);
+    const query = `
+SELECT 
+    b.*, 
+    f.*, 
+    p.*, 
+    pay.*, 
+    t.*, 
+    departureAirport.city AS departureCity, 
+    arrivalAirport.city AS arrivalCity,
+    departureAirport.IATACode AS departureIATACode,
+    arrivalAirport.IATACode AS arrivalIATACode
+FROM booking AS b
+JOIN flight AS f ON b.flightID = f.flightID
+JOIN airport AS departureAirport ON f.departureAirportID = departureAirport.airportID
+JOIN airport AS arrivalAirport ON f.arrivalAirportID = arrivalAirport.airportID
+JOIN passenger AS p ON b.bookingID = p.bookingID
+JOIN payment AS pay ON b.bookingID = pay.bookingID 
+JOIN ticket AS t ON b.bookingID = t.bookingID
+WHERE b.bookingID = ?
+`;
     try {
         const [rows] = await db.query(query, [bookingID]);
         if (rows.length === 0) {
             return res.status(404).json({ message: 'Booking not found' });
         }
-        return res.status(200).json(rows[0]);
+        return res.status(200).json(rows);
     } catch (error) {
         console.error(error);
         return res.status(500).json({ message: 'An error occurred' });
     }
-}
+};
