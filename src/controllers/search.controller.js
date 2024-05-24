@@ -128,7 +128,9 @@ exports.searchFlights = async (req, res) => {
         flight.*,
         airline.airlineName,
         departureAirport.IATACode AS \`from\`,
-        arrivalAirport.IATACode AS \`destination\`
+        arrivalAirport.IATACode AS \`destination\`,
+        departureAirport.city AS \`departureCity\`,
+        arrivalAirport.city AS \`arrivalCity\`
     FROM
         flight
     JOIN
@@ -172,6 +174,8 @@ exports.searchFlights = async (req, res) => {
                 from: flight.from,
                 destination: flight.destination,
                 subtotal: flight.baseFare,
+                arrivalCity: flight.arrivalCity,
+                departureCity: flight.departureCity,
             };
         });
 

@@ -14,7 +14,9 @@ exports.getFlightById = async (req, res) => {
                 aircraft.*, 
                 airline.airlineName,
                 departureAirport.IATACode AS departureIATACode,
-                arrivalAirport.IATACode AS arrivalIATACode
+                arrivalAirport.IATACode AS arrivalIATACode,
+                departureAirport.city AS departureCity,
+                arrivalAirport.city AS arrivalCity
             FROM flight
             JOIN aircraft ON flight.aircraftID = aircraft.aircraftID
             JOIN airline ON aircraft.airlineID = airline.airlineID
@@ -59,6 +61,10 @@ exports.getFlightById = async (req, res) => {
                 from: flight.departureIATACode,
                 destination: flight.arrivalIATACode,
                 subtotal: flight.baseFare,
+                arrivalCity: flight.arrivalCity,
+                departureCity: flight.departureCity,
+                departureTimeDate: departureTime,
+                arrivalTimeDate: arrivalTime,
             };
             res.status(200).json(flightData);
         }
