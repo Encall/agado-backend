@@ -11,6 +11,6 @@ router.post(
 );
 
 router.get('/:bookingID', bookingController.getBookingById);
-router.post('/cancel',bookingController.cancelBooking);
+router.post('/cancel', bookingController.cancelBooking);
 
 module.exports = router;

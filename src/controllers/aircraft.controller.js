@@ -188,7 +188,7 @@ exports.editAircraftByID = async (req, res) => {
             status,
             aircraftID,
         ];
-        
+
         await connection.query(updateAircraftQuery, values);
         await connection.commit(); // Commit transaction
 
@@ -217,29 +217,49 @@ exports.maintenanceAircraft = async (req, res) => {
 
         // If policy is changeAircraft, update flight status to 'Delayed'
         if (policy.changeStatus) {
-            let [rows] = await connection.query(`UPDATE flight SET status = 'Delayed' WHERE aircraftID = ?`, [aircraftID]);
+            let [rows] = await connection.query(
+                `UPDATE flight SET status = 'Delayed' WHERE aircraftID = ?`,
+                [aircraftID]
+            );
             if (rows.affectedRows === 0) {
                 throw new Error('Flight not found');
             }
-        } if (policy.changeAircraft) {
+        }
+        if (policy.changeAircraft) {
             // If policy is not changeAircraft, update aircraftID of flight
-            let [rows] = await connection.query(`UPDATE flight SET aircraftID = ? WHERE aircraftID = ?`, [newAircraft, aircraftID]);
+            let [rows] = await connection.query(
+                `UPDATE flight SET aircraftID = ? WHERE aircraftID = ?`,
+                [newAircraft, aircraftID]
+            );
             if (rows.affectedRows === 0) {
                 console.log('Failed to update aircraft');
             }
         }
 
         // Insert data into employeeTask
-        const assignDateTime = new Date().toISOString().slice(0, 19).replace('T', ' '); // UTC+0 datetime
-        let result = await connection.query(`INSERT INTO employeeTask (employeeID, assignDateTime, taskType, taskDescription,status) VALUES (?, ?, ?, ?, ?)`, 
-            [task.employee, assignDateTime, task.type, task.description,task.status]);
+        const assignDateTime = new Date()
+            .toISOString()
+            .slice(0, 19)
+            .replace('T', ' '); // UTC+0 datetime
+        let result = await connection.query(
+            `INSERT INTO employeeTask (employeeID, assignDateTime, taskType, taskDescription,status) VALUES (?, ?, ?, ?, ?)`,
+            [
+                task.employee,
+                assignDateTime,
+                task.type,
+                task.description,
+                task.status,
+            ]
+        );
         if (result.affectedRows === 0) {
             throw new Error('Failed to assign task to employee');
         }
 
         await connection.commit();
 
-        res.status(200).json({ message: 'Maintenance task assigned successfully' });
+        res.status(200).json({
+            message: 'Maintenance task assigned successfully',
+        });
     } catch (error) {
         await connection.rollback();
         console.error(error);

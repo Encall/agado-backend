@@ -1,34 +1,34 @@
 {
-  "version": "5",
-  "dialect": "mysql",
-  "entries": [
-    {
-      "idx": 0,
-      "version": "5",
-      "when": 1715710229988,
-      "tag": "0000_curious_bloodstorm",
-      "breakpoints": false
-    },
-    {
-      "idx": 1,
-      "version": "5",
-      "when": 1716041563240,
-      "tag": "0001_true_living_lightning",
-      "breakpoints": false
-    },
-    {
-      "idx": 2,
-      "version": "5",
-      "when": 1716647100874,
-      "tag": "0002_skinny_nico_minoru",
-      "breakpoints": false
-    },
-    {
-      "idx": 3,
-      "version": "5",
-      "when": 1716647300102,
-      "tag": "0003_minor_odin",
-      "breakpoints": false
-    }
-  ]
+    "version": "5",
+    "dialect": "mysql",
+    "entries": [
+        {
+            "idx": 0,
+            "version": "5",
+            "when": 1715710229988,
+            "tag": "0000_curious_bloodstorm",
+            "breakpoints": false
+        },
+        {
+            "idx": 1,
+            "version": "5",
+            "when": 1716041563240,
+            "tag": "0001_true_living_lightning",
+            "breakpoints": false
+        },
+        {
+            "idx": 2,
+            "version": "5",
+            "when": 1716647100874,
+            "tag": "0002_skinny_nico_minoru",
+            "breakpoints": false
+        },
+        {
+            "idx": 3,
+            "version": "5",
+            "when": 1716647300102,
+            "tag": "0003_minor_odin",
+            "breakpoints": false
+        }
+    ]
 }

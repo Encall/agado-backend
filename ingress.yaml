@@ -1,26 +1,26 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: adago-ingress
-  labels:
     name: adago-ingress
-  namespace: adago
-  annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /$1
-    cert-manager.io/cluster-issuer: "letsencrypt-prod" # replace with your cluster issuer
+    labels:
+        name: adago-ingress
+    namespace: adago
+    annotations:
+        nginx.ingress.kubernetes.io/rewrite-target: /$1
+        cert-manager.io/cluster-issuer: 'letsencrypt-prod' # replace with your cluster issuer
 spec:
-  rules:
-  - host: api.encall.live
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: adago-svc
-            port:
-              number: 5000
-  tls:
-  - hosts:
-    - api.encall.live # your domain 
-    secretName: letsencrypt-prod # secret name, same as the privateKeySecretRef in the (Cluster)Issuer
+    rules:
+        - host: api.encall.live
+          http:
+              paths:
+                  - path: /
+                    pathType: Prefix
+                    backend:
+                        service:
+                            name: adago-svc
+                            port:
+                                number: 5000
+    tls:
+        - hosts:
+              - api.encall.live # your domain
+          secretName: letsencrypt-prod # secret name, same as the privateKeySecretRef in the (Cluster)Issuer

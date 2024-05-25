@@ -28,13 +28,8 @@ exports.getUserProfile = async (req, res) => {
 // POST /profile/edit
 exports.editUserProfile = async (req, res) => {
     try {
-        const {
-            firstName,
-            lastName,
-            email,
-            phoneNumber,
-            ...invalidFields
-        } = req.body;
+        const { firstName, lastName, email, phoneNumber, ...invalidFields } =
+            req.body;
         const userID = req.user.userid;
 
         // Check for invalid fields

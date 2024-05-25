@@ -115,7 +115,7 @@ exports.getAllFlights = async (req, res) => {
 };
 
 exports.createFlight = async (req, res) => {
-    const { flight,task,cabinCrewTask } = req.body;
+    const { flight, task, cabinCrewTask } = req.body;
     console.log(flight);
     console.log(task);
     console.log(cabinCrewTask);
@@ -229,7 +229,7 @@ exports.createFlight = async (req, res) => {
 
         await connection.commit();
         console.log('create flight success');
-        res.status(200).json({newFlight});
+        res.status(200).json({ newFlight });
         // res.status(200).json({
         //     message: 'Flight created and employee task assigned successfully',
         // });

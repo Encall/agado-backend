@@ -13,7 +13,6 @@ const bookingRoute = require('./booking.route');
 const aircraftRoute = require('./aircraft.route');
 const schema = require('../drizzle/schema');
 
-
 router.use('/', authRoute);
 router.use('/health', healthcheckRoute);
 router.use('/dashboard', dashboardRoute);

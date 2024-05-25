@@ -26,7 +26,7 @@ exports.getAllEmployees = async (req, res) => {
             message: 'An error occurred while getting all employees',
         });
     }
-}
+};
 
 exports.getAllEmployeesTask = async (req, res) => {
     try {
@@ -44,10 +44,21 @@ exports.getAllEmployeesTask = async (req, res) => {
             message: 'An error occurred while getting all employees',
         });
     }
-}
+};
 
 exports.createEmployee = async (req, res) => {
-    const { firstName, lastName, email, phoneNumber, departmentID, position, salary, startDate, endDate, permissionLevel } = req.body;
+    const {
+        firstName,
+        lastName,
+        email,
+        phoneNumber,
+        departmentID,
+        position,
+        salary,
+        startDate,
+        endDate,
+        permissionLevel,
+    } = req.body;
     try {
         const query = `
             INSERT INTO 
@@ -55,7 +66,18 @@ exports.createEmployee = async (req, res) => {
             VALUES 
                 (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `;
-        await db.query(query, [firstName, lastName, email, phoneNumber, departmentID, position, salary, startDate, endDate, permissionLevel]);
+        await db.query(query, [
+            firstName,
+            lastName,
+            email,
+            phoneNumber,
+            departmentID,
+            position,
+            salary,
+            startDate,
+            endDate,
+            permissionLevel,
+        ]);
         res.status(200).json({
             message: 'Employee created successfully',
         });
@@ -65,7 +87,7 @@ exports.createEmployee = async (req, res) => {
             message: 'An error occurred while creating employee',
         });
     }
-}
+};
 
 exports.createEmployeeTask = async (req, res) => {
     const { employeeID, taskDescription, taskStatus } = req.body;
@@ -76,7 +98,12 @@ exports.createEmployeeTask = async (req, res) => {
             VALUES 
                 (?, ?, ?, ?)
         `;
-        await db.query(query, [employeeID, taskID, taskDescription, taskStatus]);
+        await db.query(query, [
+            employeeID,
+            taskID,
+            taskDescription,
+            taskStatus,
+        ]);
         res.status(200).json({
             message: 'Employee task created successfully',
         });
@@ -86,7 +113,7 @@ exports.createEmployeeTask = async (req, res) => {
             message: 'An error occurred while creating employee task',
         });
     }
-}
+};
 
 exports.resignEmployee = async (req, res) => {
     const { employeeID } = req.params;
@@ -122,4 +149,4 @@ exports.resignEmployee = async (req, res) => {
             message: 'An error occurred while resigning employee',
         });
     }
-}
+};

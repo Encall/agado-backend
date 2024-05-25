@@ -11,7 +11,7 @@ exports.createBooking = async (req, res) => {
         flightPackage,
         travelInsurance,
         payment,
-        price
+        price,
     } = req.body;
 
     const bookingUUID = uuidv7();
@@ -208,8 +208,8 @@ exports.cancelBooking = async (req, res) => {
     const customReason = req.body.customReason;
     const bank = req.body.bank;
     const accountNumber = req.body.accountNumber;
-    console.log(req.body)
-    
+    console.log(req.body);
+
     console.log(bookingID);
 
     const connection = await db.getConnection();
@@ -218,23 +218,35 @@ exports.cancelBooking = async (req, res) => {
         await connection.beginTransaction();
 
         // Update booking status to 'refund'
-        let [rows] = await connection.query(`UPDATE booking SET status = 'refund' WHERE bookingID = ?`, [bookingID]);
+        let [rows] = await connection.query(
+            `UPDATE booking SET status = 'refund' WHERE bookingID = ?`,
+            [bookingID]
+        );
         if (rows.affectedRows === 0) {
             throw new Error('Booking not found');
         }
 
         // Update ticket status to 'refund'
-        [rows] = await connection.query(`UPDATE ticket SET status = 'refund' WHERE bookingID = ?`, [bookingID]);
+        [rows] = await connection.query(
+            `UPDATE ticket SET status = 'refund' WHERE bookingID = ?`,
+            [bookingID]
+        );
         if (rows.affectedRows === 0) {
             throw new Error('Ticket not found');
         }
 
         // Get flightID from booking
-        const [bookingRows] = await connection.query(`SELECT flightID FROM booking WHERE bookingID = ?`, [bookingID]);
+        const [bookingRows] = await connection.query(
+            `SELECT flightID FROM booking WHERE bookingID = ?`,
+            [bookingID]
+        );
         const flightID = bookingRows[0].flightID;
 
         // Decrease currentCapacity of flight by 1
-        [rows] = await connection.query(`UPDATE flight SET currentCapacity = currentCapacity - 1 WHERE flightID = ?`, [flightID]);
+        [rows] = await connection.query(
+            `UPDATE flight SET currentCapacity = currentCapacity - 1 WHERE flightID = ?`,
+            [flightID]
+        );
         if (rows.affectedRows === 0) {
             throw new Error('Flight not found');
         }

@@ -1,4 +1,10 @@
-const { int, mysqlTable, varchar , decimal, float } = require('drizzle-orm/mysql-core');
+const {
+    int,
+    mysqlTable,
+    varchar,
+    decimal,
+    float,
+} = require('drizzle-orm/mysql-core');
 
 const airport = mysqlTable('airport', {
     airportID: int('airportID').primaryKey().autoincrement(),

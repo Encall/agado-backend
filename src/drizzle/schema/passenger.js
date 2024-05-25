@@ -10,7 +10,11 @@ const passenger = mysqlTable('passenger', {
     phoneNumber: varchar('phoneNumber', { length: 255 }).notNull(),
     dateOfBirth: date('dateOfBirth').notNull(),
     nationaltiy: varchar('nationality', { length: 255 }).notNull(),
-    bookingID: varchar('bookingID', { length: 36 }).references(() => booking.bookingID, { onDelete: 'cascade' }, { onUpdate: 'cascade' }),
+    bookingID: varchar('bookingID', { length: 36 }).references(
+        () => booking.bookingID,
+        { onDelete: 'cascade' },
+        { onUpdate: 'cascade' }
+    ),
     luggageWeight: int('luggageWeight').notNull(),
 });
 

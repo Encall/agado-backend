@@ -2,7 +2,7 @@ const db = require('../configs/db');
 
 exports.airports = async (req, res) => {
     const searchParams = req.query;
-    if(searchParams.all){
+    if (searchParams.all) {
         const queryAll = `
         SELECT
             airportID,
@@ -16,14 +16,16 @@ exports.airports = async (req, res) => {
             airport
         ORDER BY
             city ASC
-        `
-        try{
+        `;
+        try {
             const [airports] = await db.query(queryAll);
             res.status(200).json(airports);
             return;
-        }
-        catch (error) {
-            console.error('An error occurred while searching for airports:', error);
+        } catch (error) {
+            console.error(
+                'An error occurred while searching for airports:',
+                error
+            );
             res.status(500).json({
                 message: 'An error occurred while searching for airports',
             });
@@ -98,7 +100,7 @@ exports.recommendAirports = async (req, res) => {
 
 exports.searchFlights = async (req, res) => {
     const searchParams = req.query;
-    if(searchParams.all) {
+    if (searchParams.all) {
         const queryAll = `
         SELECT
             flightID,
@@ -106,14 +108,16 @@ exports.searchFlights = async (req, res) => {
         FROM flight
         GROUP BY flightNo
         ORDER BY flightNo ASC
-        `
-        try{
+        `;
+        try {
             const [flights] = await db.query(queryAll);
             res.status(200).json(flights);
             return;
-        }
-        catch (error) {
-            console.error('An error occurred while searching for flights:', error);
+        } catch (error) {
+            console.error(
+                'An error occurred while searching for flights:',
+                error
+            );
             res.status(500).json({
                 message: 'An error occurred while searching for flights',
             });
@@ -207,7 +211,7 @@ exports.getAllAirline = async (req, res) => {
             message: 'An error occurred while getting airlines',
         });
     }
-}
+};
 
 exports.getAllEmployees = async (req, res) => {
     const params = req.query;
@@ -230,7 +234,7 @@ exports.getAllEmployees = async (req, res) => {
             message: 'An error occurred while getting all employees',
         });
     }
-}
+};
 
 exports.getAllAircrafts = async (req, res) => {
     try {
@@ -249,5 +253,4 @@ exports.getAllAircrafts = async (req, res) => {
             message: 'An error occurred while getting all aircrafts',
         });
     }
-}
-
+};

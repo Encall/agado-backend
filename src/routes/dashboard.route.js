@@ -27,19 +27,31 @@ router.get(
 );
 
 // router.get('/overview', dashboardController.overview);
-router.get('/overview/flights/:month/:year', dashboardController.getMostFlightsAirlinePerMonth);
+router.get(
+    '/overview/flights/:month/:year',
+    dashboardController.getMostFlightsAirlinePerMonth
+);
 router.get('/overview/revenue', dashboardController.getMostAirlineRevenue);
-router.get('/overview/destination', dashboardController.getMostPopularDestinations);
+router.get(
+    '/overview/destination',
+    dashboardController.getMostPopularDestinations
+);
 router.get('/overview/revenueperday', dashboardController.getRevenuePerDay);
 router.get('/overview/flightsperweek', dashboardController.getFlightsPerWeek);
 router.get('/overview/dailypassenger', dashboardController.getDailyPassenger);
 router.get('/overview/airlinerevenue', dashboardController.getAirlineRevenue);
 router.get('/overview/totalPassenger', dashboardController.totalPassenger);
-router.get('/overview/flightsDestination', dashboardController.flightsDestination);
+router.get(
+    '/overview/flightsDestination',
+    dashboardController.flightsDestination
+);
 router.get('/overview/mostusedaircraft', dashboardController.mostUsedAircraft);
 router.get('/overview/statuspercentage', dashboardController.statusPercentage);
 router.get('/overview/usercount', dashboardController.usercount);
 router.get('/overview/employeecount', dashboardController.employeeCount);
-router.get('/overview/airlinepercentage', dashboardController.airlinePercentage);
+router.get(
+    '/overview/airlinepercentage',
+    dashboardController.airlinePercentage
+);
 
 module.exports = router;
