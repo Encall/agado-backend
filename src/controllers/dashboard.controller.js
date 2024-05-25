@@ -67,7 +67,7 @@ exports.getRevenuePerDay = async (req, res) => {
         ORDER BY weekday ASC
     `;
         const [revenuePerDay] = await db.query(query);
-        console.log(revenuePerDay);
+        // console.log(revenuePerDay);
 
         // Initialize an object with all weekdays set to zero
         const days = [
@@ -133,7 +133,7 @@ exports.getFlightsPerWeek = async (req, res) => {
             }
             return acc;
         }, []);
-        console.log(transformedData);
+        // console.log(transformedData);
 
         return res.status(200).json(transformedData);
     } catch (error) {
@@ -147,7 +147,7 @@ exports.getDailyPassenger = async (req, res) => {
         const query =
             'SELECT COUNT(*) as passengers, DATE(flight.departureDateTime) as date FROM ticket INNER JOIN booking ON ticket.bookingID = booking.bookingID INNER JOIN flight ON booking.flightID = flight.flightID WHERE DATE(flight.departureDateTime) BETWEEN DATE_SUB(CURRENT_DATE(), INTERVAL 7 DAY) AND CURRENT_DATE() GROUP BY DATE(flight.departureDateTime) ORDER BY date ASC';
         const [dailyPassengers] = await db.query(query);
-        console.log(dailyPassengers);
+        // console.log(dailyPassengers);
         return res.status(200).json(dailyPassengers);
     } catch (error) {
         console.error(error);
