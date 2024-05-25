@@ -215,7 +215,8 @@ exports.getAllEmployees = async (req, res) => {
             SELECT 
                 employeeID,
                 firstName,
-                lastName
+                lastName,
+                position
             FROM 
                 employee
         `;

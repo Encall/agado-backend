@@ -144,12 +144,10 @@ exports.createBooking = async (req, res) => {
 
         console.log('Booking created successfully.');
         await connection.commit();
-        return res
-            .status(200)
-            .json({
-                message: 'Booking created successfully.',
-                bookingID: bookingUUID,
-            });
+        return res.status(200).json({
+            message: 'Booking created successfully.',
+            bookingID: bookingUUID,
+        });
     } catch (error) {
         await connection.rollback();
         await connection.release();
@@ -171,12 +169,17 @@ SELECT
     p.*, 
     pay.*, 
     t.*, 
+    a.airlineName,
     departureAirport.city AS departureCity, 
     arrivalAirport.city AS arrivalCity,
     departureAirport.IATACode AS departureIATACode,
-    arrivalAirport.IATACode AS arrivalIATACode
+    arrivalAirport.IATACode AS arrivalIATACode,
+    arrivalAirport.airportName AS arrivalAirportName,
+    departureAirport.airportName AS departureAirportName
 FROM booking AS b
 JOIN flight AS f ON b.flightID = f.flightID
+JOIN aircraft AS ac ON f.aircraftID = ac.aircraftID
+JOIN airline AS a ON ac.airlineID = a.airlineID
 JOIN airport AS departureAirport ON f.departureAirportID = departureAirport.airportID
 JOIN airport AS arrivalAirport ON f.arrivalAirportID = arrivalAirport.airportID
 JOIN passenger AS p ON b.bookingID = p.bookingID
@@ -193,5 +196,54 @@ WHERE b.bookingID = ?
     } catch (error) {
         console.error(error);
         return res.status(500).json({ message: 'An error occurred' });
+    }
+};
+
+exports.cancelBooking = async (req, res) => {
+    const bookingID = req.body.bookingID;
+    const reason = req.body.reasons;
+    const customReason = req.body.customReason;
+    const bank = req.body.bank;
+    const accountNumber = req.body.accountNumber;
+    console.log(req.body)
+    
+    console.log(bookingID);
+
+    const connection = await db.getConnection();
+
+    try {
+        await connection.beginTransaction();
+
+        // Update booking status to 'refund'
+        let [rows] = await connection.query(`UPDATE booking SET status = 'refund' WHERE bookingID = ?`, [bookingID]);
+        if (rows.affectedRows === 0) {
+            throw new Error('Booking not found');
+        }
+
+        // Update ticket status to 'refund'
+        [rows] = await connection.query(`UPDATE ticket SET status = 'refund' WHERE bookingID = ?`, [bookingID]);
+        if (rows.affectedRows === 0) {
+            throw new Error('Ticket not found');
+        }
+
+        // Get flightID from booking
+        const [bookingRows] = await connection.query(`SELECT flightID FROM booking WHERE bookingID = ?`, [bookingID]);
+        const flightID = bookingRows[0].flightID;
+
+        // Decrease currentCapacity of flight by 1
+        [rows] = await connection.query(`UPDATE flight SET currentCapacity = currentCapacity - 1 WHERE flightID = ?`, [flightID]);
+        if (rows.affectedRows === 0) {
+            throw new Error('Flight not found');
+        }
+
+        await connection.commit();
+
+        res.status(200).json({ message: 'Booking cancelled' });
+    } catch (error) {
+        await connection.rollback();
+        console.error(error);
+        return res.status(500).json({ message: 'An error occurred' });
+    } finally {
+        connection.release();
     }
 };

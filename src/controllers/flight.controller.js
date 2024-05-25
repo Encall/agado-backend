@@ -115,8 +115,10 @@ exports.getAllFlights = async (req, res) => {
 };
 
 exports.createFlight = async (req, res) => {
-    const { flight, task } = req.body;
+    const { flight,task,cabinCrewTask } = req.body;
+    console.log(flight);
     console.log(task);
+    console.log(cabinCrewTask);
     const connection = await db.getConnection();
     console.log(flight);
     flight.departureDateTime = new Date(flight.departureDateTime).toISOString();
@@ -173,7 +175,28 @@ exports.createFlight = async (req, res) => {
                 ]);
             })
         );
-
+        const queryCabinCrewTask = `
+            INSERT INTO employeeTask (
+                employeeID,
+                assignDateTime,
+                taskType,
+                taskDescription,
+                status,
+                flightID
+            ) VALUES (?, ?, ?, ?, ?, ?)
+        `;
+        await Promise.all(
+            cabinCrewTask.map((t) => {
+                return connection.query(queryCabinCrewTask, [
+                    t.employeeID,
+                    currentTime,
+                    t.taskType,
+                    t.taskDescription,
+                    t.status,
+                    t.flightID,
+                ]);
+            })
+        );
         const [newFlight] = await connection.query(
             `
         SELECT 
