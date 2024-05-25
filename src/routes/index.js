@@ -10,7 +10,9 @@ const flightRoute = require('./flight.route');
 const employeeRoute = require('./employee.route');
 const passengerRoute = require('./passenger.route');
 const bookingRoute = require('./booking.route');
+const aircraftRoute = require('./aircraft.route');
 const schema = require('../drizzle/schema');
+
 
 router.use('/', authRoute);
 router.use('/health', healthcheckRoute);
@@ -21,5 +23,6 @@ router.use('/flight', flightRoute);
 router.use('/employee', employeeRoute);
 router.use('/passenger', passengerRoute);
 router.use('/booking', bookingRoute);
+router.use('/aircraft', aircraftRoute);
 
 module.exports = router;
