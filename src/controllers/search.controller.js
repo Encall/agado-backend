@@ -210,6 +210,7 @@ exports.getAllAirline = async (req, res) => {
 }
 
 exports.getAllEmployees = async (req, res) => {
+    const params = req.query;
     try {
         const query = `
             SELECT 

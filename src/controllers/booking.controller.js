@@ -11,6 +11,7 @@ exports.createBooking = async (req, res) => {
         flightPackage,
         travelInsurance,
         payment,
+        price
     } = req.body;
 
     const bookingUUID = uuidv7();
@@ -56,7 +57,7 @@ exports.createBooking = async (req, res) => {
         uuidv7(),
         bookingUUID,
         passengerData[index][0],
-        flight.subtotal,
+        price,
         passenger.seat,
         'economy',
     ]);
