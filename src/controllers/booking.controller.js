@@ -187,9 +187,11 @@ JOIN passenger AS p ON b.bookingID = p.bookingID
 JOIN payment AS pay ON b.bookingID = pay.bookingID 
 JOIN ticket AS t ON b.bookingID = t.bookingID
 WHERE b.bookingID = ?
+GROUP BY t.ticketNo
 `;
     try {
         const [rows] = await db.query(query, [bookingID]);
+        console.log('Rows:', rows.length);
         if (rows.length === 0) {
             return res.status(404).json({ message: 'Booking not found' });
         }
