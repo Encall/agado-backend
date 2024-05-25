@@ -210,12 +210,14 @@ exports.getAllAirline = async (req, res) => {
 }
 
 exports.getAllEmployees = async (req, res) => {
+    const params = req.query;
     try {
         const query = `
             SELECT 
                 employeeID,
                 firstName,
-                lastName
+                lastName,
+                position
             FROM 
                 employee
         `;
